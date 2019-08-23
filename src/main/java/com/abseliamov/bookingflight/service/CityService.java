@@ -1,17 +1,24 @@
 package com.abseliamov.bookingflight.service;
 
-import com.abseliamov.bookingflight.dao.CityDAO;
+import com.abseliamov.bookingflight.dao.CityDAOImpl;
 import com.abseliamov.bookingflight.entity.City;
+import com.abseliamov.bookingflight.utils.CurrentUser;
 
 import java.util.List;
 
 public class CityService {
-    private CityDAO cityDAO = new CityDAO();
+    private CityDAOImpl cityDAOImpl;
+    private CurrentUser currentUser;
     private List<City> cities;
+
+    public CityService(CityDAOImpl cityDAOImpl, CurrentUser currentUser) {
+        this.cityDAOImpl = cityDAOImpl;
+        this.currentUser = currentUser;
+    }
 
     public City getCity(int cityId) {
         City city = null;
-        cities = cityDAO.getAllCity();
+        cities = cityDAOImpl.getAll();
         if (!cities.isEmpty()) {
             for (City cityItem : cities) {
                 if (cityItem.getId() == cityId) {
@@ -26,9 +33,9 @@ public class CityService {
     }
 
     public boolean getAllCity() {
-        cities = cityDAO.getAllCity();
+        cities = cityDAOImpl.getAll();
         if (!cities.isEmpty()) {
-            for (City city: cities){
+            for (City city : cities) {
                 System.out.println(city.getId() + ". " + city.getName());
             }
         } else {

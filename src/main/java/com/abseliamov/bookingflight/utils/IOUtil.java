@@ -20,7 +20,7 @@ public class IOUtil {
         return file;
     }
 
-    public static String getFile(String fileName) {
+    public static File getFile(String fileName) {
         Properties property = new Properties();
         try {
             property.load(new FileReader("src/main/resources/properties/file.properties"));
@@ -29,6 +29,6 @@ public class IOUtil {
         }
         String resourceFile = property.getProperty(fileName);
         File file = IOUtil.checkFileExists(resourceFile);
-        return resourceFile;
+        return file;
     }
 }

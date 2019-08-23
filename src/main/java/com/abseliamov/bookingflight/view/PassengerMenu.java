@@ -6,10 +6,16 @@ import com.abseliamov.bookingflight.utils.InputData;
 import com.abseliamov.bookingflight.utils.ReadInputData;
 
 public class PassengerMenu {
-    public static InitializationUser initializationUser = new InitializationUser();
-    private CityController cityController = new CityController();
-    private RouteController routeController = new RouteController();
+    private InitializationUser initializationUser;
+    private CityController cityController;
+    private RouteController routeController;
     Integer itemMenu;
+
+    public PassengerMenu(InitializationUser initializationUser, CityController cityController, RouteController routeController) {
+        this.initializationUser = initializationUser;
+        this.cityController = cityController;
+        this.routeController = routeController;
+    }
 
     public void mainMenu() {
         MenuInputOutputService.printMenuHeader(MenuContentList.getHeaderSite());
@@ -23,8 +29,7 @@ public class PassengerMenu {
                     System.exit(0);
                     break;
                 case 1:
-                    MenuInputOutputService.printMenuItem(MenuContentList.getSearchMenu());
-                    searchMenu();
+                    initializationUser.loginUser();
                     break;
                 case 2:
                     initializationUser.registrationUser();
@@ -55,7 +60,7 @@ public class PassengerMenu {
                     routeController.getRoutesByCity(cityDepartureId, cityArrivalId);
                     break;
                 default:
-                    System.out.println("Error. Incorrect menu item.\n*********************************");
+                    System.out.println("Error. Incorrect menu item.\n************************************");
                     break;
             }
         } while (!MenuInputOutputService.validateNumberSize(MenuContentList.getSearchMenu().size(), itemMenu));

@@ -20,14 +20,20 @@ public class MenuContentList {
         headerSite.add("*********************************");
 
         mainMenu.add("MAIN MENU");
-        mainMenu.add("Search ticket");
-        mainMenu.add("Authorization");
+        mainMenu.add("Sing in");
+        mainMenu.add("Create account");
         mainMenu.add("Exit");
 
-        searchMenu.add("SEARCH MENU");
+//        mainMenu.add("MAIN MENU");
+//        mainMenu.add("Search ticket");
+//        mainMenu.add("Authorization");
+//        mainMenu.add("Exit");
+
+        searchMenu.add("SEARCH ONE WAY MENU");
         searchMenu.add("Search ticket by city");
         searchMenu.add("Search ticket by date");
         searchMenu.add("Search ticket by comfort class");
+        searchMenu.add("Exact ticket search");
         searchMenu.add("Exit");
 
         searchRouteMenu.add("Select flight departure city: ");

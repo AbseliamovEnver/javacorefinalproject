@@ -5,31 +5,10 @@ import com.abseliamov.bookingflight.utils.InputData;
 import com.abseliamov.bookingflight.utils.ReadInputData;
 
 public class InitializationUser {
-    private UserController userController = new UserController();
+    private UserController userController;
 
-    public void loginUser() {
-        String firstName;
-        String password;
-        boolean loginUser = false;
-
-        do {
-            firstName = ReadInputData.getValidInputData("Enter your name: ", InputData.STRING);
-            if (firstName.isEmpty() || firstName.contains(" ")) {
-                System.out.println("\'" + firstName + "\' - it is incorrect value");
-                continue;
-            }
-            password = ReadInputData.getValidInputData("Enter your password: ", InputData.STRING);
-            if (password.isEmpty() || password.contains(" ")) {
-                System.out.println("\'" + password + "\' - it is incorrect value");
-                continue;
-            }
-            loginUser = userController.loginUser(firstName, password);
-            if (!loginUser) {
-                System.out.println("The name or password that you entered is not registered." +
-                        "\nPlease enter the correct data or register");
-            }
-        } while (!loginUser);
-        System.out.println(firstName + " welcome to our site!!!");
+    public InitializationUser(UserController userController) {
+        this.userController = userController;
     }
 
     public void registrationUser() {
@@ -40,32 +19,65 @@ public class InitializationUser {
         boolean createUser = false;
 
         do {
-            firstName = ReadInputData.getValidInputData("Enter your first name: ", InputData.STRING);
+            firstName = ReadInputData.getValidInputData("Enter your first name or '0' to return: ", InputData.STRING);
             if (firstName.isEmpty() || firstName.contains(" ")) {
                 System.out.println("\'" + firstName + "\' - it is incorrect value");
                 continue;
+            } else if (firstName.equals("0")) {
+                return;
             }
-            lastName = ReadInputData.getValidInputData("Enter your last name: ", InputData.STRING);
+            lastName = ReadInputData.getValidInputData("Enter your last name or '0' to return: ", InputData.STRING);
             if (lastName.isEmpty() || lastName.contains(" ")) {
                 System.out.println("\'" + lastName + "\' - it is incorrect value");
                 continue;
+            } else if (lastName.equals("0")) {
+                return;
             }
             password = ReadInputData.getValidInputData("Enter your password: ", InputData.STRING);
             if (password.isEmpty() || password.contains(" ")) {
                 System.out.println("\'" + password + "\' - it is incorrect value");
                 continue;
             } else {
-                confirmPassword = ReadInputData.getValidInputData("Сonfirm password again: ", InputData.STRING);
+                confirmPassword = ReadInputData.getValidInputData("Enter password again or '0' to return: ", InputData.STRING);
                 if (!password.equals(confirmPassword)) {
                     System.out.println("\'" + confirmPassword + "\' - it is incorrect value");
                     continue;
+                } else if (confirmPassword.equals("0")) {
+                    return;
                 }
+                createUser = true;
             }
-            createUser = userController.createUser(firstName, lastName, password);
-            if (!createUser) {
-                System.out.println("User with such data already exists.\nPlease enter other data.");
-            }
+            userController.createUser(firstName, lastName, password);
         } while (!createUser);
-        System.out.println("You have successfully registered.\n\tWelcome to our site!!!");
+        System.out.println("You have successfully registered.\n\tWelcome to our site!!!\n");
+    }
+
+    public void loginUser() {
+        String firstName;
+        String password;
+        boolean loginUser = false;
+
+        do {
+            firstName = ReadInputData.getValidInputData("Enter your name or '0' to return: ", InputData.STRING);
+            if (firstName.isEmpty() || firstName.contains(" ")) {
+                System.out.println("\'" + firstName + "\' - it is incorrect value");
+                continue;
+            } else if (firstName.equals("0")) {
+                return;
+            }
+            password = ReadInputData.getValidInputData("Enter your password or '0' to return: ", InputData.STRING);
+            if (password.isEmpty() || password.contains(" ")) {
+                System.out.println("\'" + password + "\' - it is incorrect value");
+                continue;
+            } else if (password.equals("0")) {
+                return;
+            }
+            loginUser = userController.loginUser(firstName, password);
+            if (!loginUser) {
+                System.out.println("The name or password that you entered is not registered." +
+                        "\nPlease enter the correct data or register");
+            }
+        } while (!loginUser);
+        System.out.println(firstName + " welcome to our site!!!");
     }
 }

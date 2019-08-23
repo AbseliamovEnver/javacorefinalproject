@@ -4,10 +4,14 @@ import com.abseliamov.bookingflight.utils.InputData;
 import com.abseliamov.bookingflight.utils.ReadInputData;
 
 public class StartMenu {
+    InitializationUser initializationUser;
+
+    public StartMenu(InitializationUser initializationUser) {
+        this.initializationUser = initializationUser;
+    }
+
     public void start() {
         Menu menu = new Menu();
-        InitializationUser initializationUser = new InitializationUser();
-
         System.out.println("\t** WELCOME TO BOOKING FLIGHT **");
 
         while (true) {

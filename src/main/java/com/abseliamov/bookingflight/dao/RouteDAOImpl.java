@@ -10,22 +10,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RouteDAO {
-    private static BufferedReader reader;
+public class RouteDAOImpl implements GeneralDaoInterface<Route> {
+    IODaoUtil daoUtil = new IODaoUtil();
 
-    static {
-        try {
-            reader = new BufferedReader(new FileReader(IOUtil.getFile("file.routes")));
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading file routes.csv " + e);
-        }
+    @Override
+    public void create(Route route) {
+
     }
 
-    public List<Route> getAllRoutes() {
+    @Override
+    public Route getById() {
+        return null;
+    }
+
+    @Override
+    public List<Route> getAll() {
         List<Route> routes = new ArrayList<>();
         String data;
         try {
-            while ((data = getReader().readLine()) != null) {
+            while ((data = daoUtil.getReader("file.routes").readLine()) != null) {
                 String[] routeData = data.split(",");
                 routes.add(new Route(Long.parseLong(routeData[0].trim()),
                         Long.parseLong(routeData[1].trim()), Long.parseLong(routeData[2].trim()),
@@ -38,18 +41,24 @@ public class RouteDAO {
         return routes;
     }
 
-    public static BufferedReader getReader() {
-        return reader;
+    @Override
+    public void update(Route route) {
+
     }
 
-    private Date parseDate(String dateString) {
+    @Override
+    public void delete(Route route) {
+
+    }
+
+    private String parseDate(String dateString) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date date = null;
         try {
             date = simpleDateFormat.parse(dateString);
         } catch (ParseException e) {
-            e.printStackTrace();
+            System.out.println("Error parse date: " + e);
         }
-        return date;
+        return simpleDateFormat.format(date);
     }
 }

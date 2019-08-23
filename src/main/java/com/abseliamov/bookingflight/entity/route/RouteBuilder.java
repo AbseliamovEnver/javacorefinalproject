@@ -1,13 +1,11 @@
 package com.abseliamov.bookingflight.entity.route;
 
-import java.util.Date;
-
 public class RouteBuilder {
     private long id;
     private int departureCityId;
     private int arrivalCityId;
-    private Date dateDeparture;
-    private Date dateArrival;
+    private String dateDeparture;
+    private String dateArrival;
     private int businessClassSeat;
     private int economyClassSeat;
 
@@ -29,12 +27,12 @@ public class RouteBuilder {
         return this;
     }
 
-    public RouteBuilder dateDeparture(Date value) {
+    public RouteBuilder dateDeparture(String  value) {
         dateDeparture = value;
         return this;
     }
 
-    public RouteBuilder dateArrival(Date value) {
+    public RouteBuilder dateArrival(String value) {
         dateArrival = value;
         return this;
     }

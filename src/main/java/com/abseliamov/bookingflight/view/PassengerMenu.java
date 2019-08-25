@@ -4,8 +4,8 @@ import com.abseliamov.bookingflight.controller.CityController;
 import com.abseliamov.bookingflight.controller.RouteController;
 import com.abseliamov.bookingflight.entity.TypeCabin;
 import com.abseliamov.bookingflight.utils.CurrentUser;
+import com.abseliamov.bookingflight.utils.IOUtil;
 import com.abseliamov.bookingflight.utils.InputData;
-import com.abseliamov.bookingflight.utils.ReadInputData;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,14 +26,14 @@ public class PassengerMenu {
     }
 
     public void mainMenu() {
-        MenuInputOutputService.printMenuHeader(MenuContentList.getHeaderSite());
+        IOUtil.printMenuHeader(MenuContentList.getHeaderMenu());
         do {
-            MenuInputOutputService.printMenuItem(MenuContentList.getMainMenu());
-            itemMenu = Integer.parseInt(ReadInputData.
+            IOUtil.printMenuItem(MenuContentList.getMainMenu());
+            itemMenu = Integer.parseInt(IOUtil.
                     getValidInputData("Select MAIN MENU item: ", InputData.INTEGER));
             switch (itemMenu) {
                 case 0:
-                    MenuInputOutputService.printMenuHeader(MenuContentList.getFooterMenu());
+                    IOUtil.printMenuHeader(MenuContentList.getFooterMenu());
                     System.exit(0);
                     break;
                 case 1:
@@ -52,7 +52,7 @@ public class PassengerMenu {
                     System.out.println("Error. Incorrect menu item.\n*********************************");
                     break;
             }
-        } while (!MenuInputOutputService.validateNumberSize(itemMenu, MenuContentList.getMainMenu().size()));
+        } while (!IOUtil.validateNumberSize(itemMenu, MenuContentList.getMainMenu().size()));
     }
 
     private void searchMenu() {
@@ -62,8 +62,8 @@ public class PassengerMenu {
         TypeCabin typeCabin = null;
         int numberPassengers = 0;
         do {
-            MenuInputOutputService.printMenuItem(MenuContentList.getSearchMenu());
-            itemMenu = Integer.parseInt(ReadInputData.
+            IOUtil.printMenuItem(MenuContentList.getSearchMenu());
+            itemMenu = Integer.parseInt(IOUtil.
                     getValidInputData("Select TICKET MENU item: ", InputData.INTEGER));
             switch (itemMenu) {
                 case 0:
@@ -71,30 +71,33 @@ public class PassengerMenu {
                 case 1:
                     if (cityController.getAllCity()) {
                         do {
-                            cityDepartureId = Integer.parseInt(ReadInputData.
+                            cityDepartureId = Integer.parseInt(IOUtil.
                                     getValidInputData("Select departure city id: ", InputData.INTEGER));
-                            cityArrivalId = Integer.parseInt(ReadInputData.
+                            cityArrivalId = Integer.parseInt(IOUtil.
                                     getValidInputData("Select arrival city id: ", InputData.INTEGER));
                             if (cityDepartureId == cityArrivalId) {
                                 System.out.println("Departure and arrival cities should be different.");
                             }
                         } while (cityDepartureId == cityArrivalId);
 
-                        String dateDeparture = ReadInputData.
+                        String dateDeparture = IOUtil.
                                 getValidInputData("Enter departure date in format \'dd.MM.yyyy\': ", InputData.DATE);
                         date = LocalDate.parse(dateDeparture, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
                         TypeCabin.printEnum(TypeCabin.values());
-                        int classCabin = Integer.parseInt(ReadInputData.
+                        int classCabin = Integer.parseInt(IOUtil.
                                 getValidInputData("Select ID class cabin: ", InputData.INTEGER));
                         typeCabin = TypeCabin.getType(classCabin);
 
-                        numberPassengers = Integer.parseInt(ReadInputData.
+                        numberPassengers = Integer.parseInt(IOUtil.
                                 getValidInputData("Enter the number of passengers: ", InputData.INTEGER));
                     }
                     routeController.getRoutesByRequest(cityDepartureId, cityArrivalId,
                             date, typeCabin, numberPassengers);
 
+                    break;
+                case 2:
+                        
                     break;
                 case 5:
                     if (currentUser != null) {
@@ -105,6 +108,6 @@ public class PassengerMenu {
                     System.out.println("Error. Incorrect menu item.\n************************************");
                     break;
             }
-        } while (!MenuInputOutputService.validateNumberSize(itemMenu, MenuContentList.getSearchMenu().size()));
+        } while (!IOUtil.validateNumberSize(itemMenu, MenuContentList.getSearchMenu().size()));
     }
 }

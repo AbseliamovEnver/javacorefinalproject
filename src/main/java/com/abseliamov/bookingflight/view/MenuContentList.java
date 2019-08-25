@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuContentList {
-    private static List<String> headerSite = new ArrayList<>();
+    private static List<String> headerMenu = new ArrayList<>();
     private static List<String> mainMenu = new ArrayList<>();
     private static List<String> searchMenu = new ArrayList<>();
-    private static List<String> classCabins = new ArrayList<>();
-    private static List<String> searchRouteMenu = new ArrayList<>();
-    private static List<String> userDataMenu = new ArrayList<>();
+    private static List<String> mainAdminMenu = new ArrayList<>();
     private static List<String> footerMenu = new ArrayList<>();
     private static CurrentUser currentUser;
 
@@ -19,9 +17,9 @@ public class MenuContentList {
     }
 
     public static void createMenuContent() {
-        headerSite.add("*********************************");
-        headerSite.add(" ** WELCOME TO BOOKING FLIGHT **");
-        headerSite.add("*********************************");
+        headerMenu.add("*********************************");
+        headerMenu.add(" ** WELCOME TO BOOKING FLIGHT **");
+        headerMenu.add("*********************************");
 
         mainMenu.add("MAIN MENU");
         mainMenu.add("Sing in");
@@ -35,23 +33,20 @@ public class MenuContentList {
         searchMenu.add("Logout");
         searchMenu.add("Exit");
 
-        classCabins.add("Class cabin");
-        classCabins.add("Business class");
-        classCabins.add("Economy class");
-
-        searchRouteMenu.add("Select flight departure city: ");
-        searchRouteMenu.add("Select city of flight arrival: ");
-        searchRouteMenu.add("Enter departure date");
-        searchRouteMenu.add("Select comfort class");
-        searchRouteMenu.add("Exit");
+        mainAdminMenu.add("Create route");
+        mainAdminMenu.add("Search route");
+        mainAdminMenu.add("Update route");
+        mainAdminMenu.add("Delete route");
+        mainAdminMenu.add("Update user");
+        mainAdminMenu.add("Exit");
 
         footerMenu.add("**************************************");
         footerMenu.add("-= THANK FOR USING OUR APPLICATION! =-");
         footerMenu.add(" *****-= HAVE A NICE TRIP!!! =-*****");
     }
 
-    public static List<String> getHeaderSite() {
-        return headerSite;
+    public static List<String> getHeaderMenu() {
+        return headerMenu;
     }
 
     public static List<String> getMainMenu() {
@@ -62,16 +57,8 @@ public class MenuContentList {
         return searchMenu;
     }
 
-    public static List<String> getClassCabins() {
-        return classCabins;
-    }
-
-    public static List<String> getSearchRouteMenu() {
-        return searchRouteMenu;
-    }
-
-    public static List<String> getUserDataMenu() {
-        return userDataMenu;
+    public static List<String> getMainAdminMenu() {
+        return mainAdminMenu;
     }
 
     public static List<String> getFooterMenu() {

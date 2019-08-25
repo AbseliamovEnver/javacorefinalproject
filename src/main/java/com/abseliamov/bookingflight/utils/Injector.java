@@ -5,9 +5,11 @@ import com.abseliamov.bookingflight.controller.RouteController;
 import com.abseliamov.bookingflight.controller.UserController;
 import com.abseliamov.bookingflight.dao.CityDAOImpl;
 import com.abseliamov.bookingflight.dao.RouteDAOImpl;
+import com.abseliamov.bookingflight.dao.TicketDAOImpl;
 import com.abseliamov.bookingflight.dao.UserDAOImpl;
 import com.abseliamov.bookingflight.service.CityService;
 import com.abseliamov.bookingflight.service.RouteService;
+import com.abseliamov.bookingflight.service.TicketService;
 import com.abseliamov.bookingflight.service.UserService;
 import com.abseliamov.bookingflight.view.InitializationUser;
 import com.abseliamov.bookingflight.view.PassengerMenu;
@@ -21,14 +23,18 @@ public class Injector {
     private static InitializationUser initializationUser = new InitializationUser(userController);
 
     private static CityDAOImpl cityDAOImpl = new CityDAOImpl();
-    private static CityService cityService = new CityService(cityDAOImpl, currentUser);
+    private static CityService cityService = new CityService(cityDAOImpl);
     private static CityController cityController = new CityController(cityService, currentUser);
 
     private static RouteDAOImpl routeDAOImpl = new RouteDAOImpl();
-    private static RouteService routeService = new RouteService(routeDAOImpl, cityService);
+    private static RouteService routeService = new RouteService(routeDAOImpl, cityService, currentUser);
+    private static TicketDAOImpl ticketDAO = new TicketDAOImpl();
+    private static TicketService ticketService = new TicketService(routeDAOImpl, routeService, ticketDAO);
     private static RouteController routeController = new RouteController(routeService, currentUser);
 
-    private static PassengerMenu passengerMenu = new PassengerMenu(initializationUser, cityController, routeController);
+    private static PassengerMenu passengerMenu = new PassengerMenu(initializationUser, cityController,
+            routeController, currentUser);
+
 
     public static CurrentUser getCurrentUser() {
         return currentUser;
@@ -54,8 +60,8 @@ public class Injector {
         return cityDAOImpl;
     }
 
-    public static CityService getCityService() {
-        return cityService;
+    public static RouteService getRouteService() {
+        return routeService;
     }
 
     public static CityController getCityController() {
@@ -66,8 +72,8 @@ public class Injector {
         return routeDAOImpl;
     }
 
-    public static RouteService getRouteService() {
-        return routeService;
+    public static TicketService getTicketService() {
+        return ticketService;
     }
 
     public static RouteController getRouteController() {

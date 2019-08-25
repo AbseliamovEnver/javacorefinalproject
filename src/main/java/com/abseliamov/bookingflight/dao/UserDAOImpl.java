@@ -9,54 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements GeneralDaoInterface<User> {
-    private List<User> usersFromFile = new ArrayList<>();
     private File file = IOUtil.getFile("file.users");
-    private final String FILE_HEADER = "Id, firstName, lastName, password, role";
+    private final String USERS_FILE_HEADER = "Id, firstName, lastName, password, role";
     private final String COMMA_SEPARATOR = ",";
-
-    private List<User> readFromFile(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String data;
-            while ((data = reader.readLine()) != null) {
-                if (data.equals(FILE_HEADER)) {
-                    continue;
-                }
-                String[] userData = data.split(",");
-                usersFromFile.add(new User(Long.parseLong(userData[0]), userData[1], userData[2], userData[3],
-                        Role.valueOf(userData[4])));
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File " + file.getName() + " not found " + e);
-        } catch (IOException e) {
-            System.out.println("Error read from file " + file.getName() + " " + e);
-        }
-        return usersFromFile;
-    }
-
-    private void writeToFile(List<User> users) {
-        try (FileWriter writer = new FileWriter(file)) {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(FILE_HEADER);
-            for (User userItem : users) {
-                builder.append("\n");
-                builder.append(userItem.getId());
-                builder.append(COMMA_SEPARATOR);
-                builder.append(userItem.getFirstName());
-                builder.append(COMMA_SEPARATOR);
-                builder.append(userItem.getLastName());
-                builder.append(COMMA_SEPARATOR);
-                builder.append(userItem.getPassword());
-                builder.append(COMMA_SEPARATOR);
-                builder.append(userItem.getRole().toString());
-            }
-            writer.write(builder.toString());
-        } catch (
-                IOException e) {
-            System.out.println("Error write to file " + file.getName() + " " + e);
-        }
-
-    }
+    private List<User> usersFromFile = new ArrayList<>();
 
     @Override
     public void create(User user) {
@@ -84,7 +40,7 @@ public class UserDAOImpl implements GeneralDaoInterface<User> {
     }
 
     @Override
-    public User getById() {
+    public User getById(long id) {
         return null;
     }
 
@@ -109,14 +65,49 @@ public class UserDAOImpl implements GeneralDaoInterface<User> {
                 .filter(user -> user.getPassword().equals(password))
                 .findFirst()
                 .orElse(null);
+    }
 
-//        List<User> users = readFromFile(fileUsers);
-//        User currentUser = null;
-//        for (User userItem : users) {
-//            if (userItem.getFirstName().equals(firstName) && userItem.getPassword().equals(password)) {
-//                currentUser = userItem;
-//            }
-//        }
-//        return currentUser;
+    private List<User> readFromFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String data;
+            while ((data = reader.readLine()) != null) {
+                if (data.equals(USERS_FILE_HEADER)) {
+                    continue;
+                }
+                String[] userData = data.split(",");
+                usersFromFile.add(new User(Long.parseLong(userData[0]), userData[1], userData[2], userData[3],
+                        Role.valueOf(userData[4])));
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + file.getName() + " not found " + e);
+        } catch (IOException e) {
+            System.out.println("Error read from file " + file.getName() + " " + e);
+        }
+        return usersFromFile;
+    }
+
+    private void writeToFile(List<User> users) {
+        try (FileWriter writer = new FileWriter(file)) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(USERS_FILE_HEADER);
+            for (User userItem : users) {
+                builder.append("\n");
+                builder.append(userItem.getId());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(userItem.getFirstName());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(userItem.getLastName());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(userItem.getPassword());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(userItem.getRole().toString());
+            }
+            writer.write(builder.toString());
+        } catch (
+                IOException e) {
+            System.out.println("Error write to file " + file.getName() + " " + e);
+        }
+
     }
 }

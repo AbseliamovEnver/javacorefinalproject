@@ -12,9 +12,10 @@ public class MenuInputOutputService {
     public static <T> void printMenuItem(List<T> menu) {
 
         if (menu != null) {
+            System.out.println("*********************************");
             for (int i = 0; i < menu.size(); i++) {
                 if (i == 0) {
-                    System.out.println("\t" + menu.get(i));
+                    System.out.println("\t" + menu.get(i) + "\n*********************************");
                     continue;
                 }
                 if (i == menu.size() - 1) {

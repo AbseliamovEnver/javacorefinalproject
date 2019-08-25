@@ -2,46 +2,33 @@ package com.abseliamov.bookingflight.service;
 
 import com.abseliamov.bookingflight.dao.CityDAOImpl;
 import com.abseliamov.bookingflight.entity.City;
-import com.abseliamov.bookingflight.utils.CurrentUser;
 
 import java.util.List;
 
 public class CityService {
-    private CityDAOImpl cityDAOImpl;
-    private CurrentUser currentUser;
-    private List<City> cities;
+    private CityDAOImpl cityDAO;
 
-    public CityService(CityDAOImpl cityDAOImpl, CurrentUser currentUser) {
-        this.cityDAOImpl = cityDAOImpl;
-        this.currentUser = currentUser;
+    public CityService(CityDAOImpl cityDAO) {
+        this.cityDAO = cityDAO;
     }
 
-    public City getCity(int cityId) {
-        City city = null;
-        cities = cityDAOImpl.getAll();
-        if (!cities.isEmpty()) {
-            for (City cityItem : cities) {
-                if (cityItem.getId() == cityId) {
-                    city = cityItem;
-                    break;
-                }
-            }
-        } else {
-            System.out.println("List of cities is empty.");
-        }
-        return city;
+    public City getCityById(long cityId) {
+        return cityDAO.getById(cityId);
     }
 
-    public boolean getAllCity() {
-        cities = cityDAOImpl.getAll();
+    public List<City> getAllCity() {
+        List<City> cities = cityDAO.getAll();
         if (!cities.isEmpty()) {
+            System.out.println("*********************************");
+            System.out.println("ID\tCITY");
+            System.out.println("*********************************");
             for (City city : cities) {
-                System.out.println(city.getId() + ". " + city.getName());
+                System.out.println(city.getId() + ".\t" + city.getName());
             }
+            System.out.println("*********************************");
         } else {
-            System.out.println("List of cities is empty.");
-            return false;
+            System.out.println("List cities is empty.");
         }
-        return true;
+        return cityDAO.getAll();
     }
 }

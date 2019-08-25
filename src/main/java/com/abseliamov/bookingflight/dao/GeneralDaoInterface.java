@@ -6,7 +6,7 @@ public interface GeneralDaoInterface<T> {
 
     void create(T t);
 
-    T getById();
+    T getById(long id);
 
     List<T> getAll();
 

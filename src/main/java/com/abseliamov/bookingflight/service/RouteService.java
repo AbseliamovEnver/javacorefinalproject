@@ -1,39 +1,88 @@
 package com.abseliamov.bookingflight.service;
 
+import com.abseliamov.bookingflight.dao.CityDAOImpl;
 import com.abseliamov.bookingflight.dao.RouteDAOImpl;
+import com.abseliamov.bookingflight.entity.Ticket;
+import com.abseliamov.bookingflight.entity.TypeCabin;
 import com.abseliamov.bookingflight.entity.route.Route;
+import com.abseliamov.bookingflight.utils.CurrentUser;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RouteService {
-    private RouteDAOImpl routeDAOImpl;
+    private RouteDAOImpl routeDAO;
+    private CityDAOImpl cityDAOImpl;
+    private CurrentUser currentUser;
     private CityService cityService;
+    private List<Ticket> cities;
 
-    public RouteService(RouteDAOImpl routeDAOImpl, CityService cityService) {
-        this.routeDAOImpl = routeDAOImpl;
+    public RouteService(RouteDAOImpl routeDAO, CityService cityService, CurrentUser currentUser) {
+        this.routeDAO = routeDAO;
         this.cityService = cityService;
+        this.currentUser = currentUser;
+        this.cityDAOImpl = cityDAOImpl;
     }
 
-    public List<Route> getRoutesByCity(long departureCityId, long arrivalCityId) {
-        List<Route> routes = routeDAOImpl.getAll();
-        List<Route> routeList = new ArrayList<>();
-        if (!routes.isEmpty()) {
-            for (Route routeItem : routes) {
-                if (routeItem.getDepartureCityId() == departureCityId
-                        && routeItem.getArrivalCityId() == arrivalCityId) {
-                    routeList.add(routeItem);
+    public Ticket getCity(int cityId) {
+        Ticket ticket = null;
+//        cities = cityDAOImpl.getAll();
+        if (!cities.isEmpty()) {
+            for (Ticket ticketItem : cities) {
+                if (ticketItem.getId() == cityId) {
+                    ticket = ticketItem;
+                    break;
                 }
             }
-            if (!routeList.isEmpty()) {
-                printRoutes(routeList);
-            } else {
-                System.out.println("Routes between these cities not found.");
-            }
         } else {
-            System.out.println("List of routes is empty.");
+            System.out.println("List of cities is empty.");
         }
-        return routeList;
+        return ticket;
+    }
+
+    public List<Route> getRouteByRequest(long departureCityId, long arrivalCityId, LocalDateTime timeDeparture,
+                                         TypeCabin typeCabin, int numberPassengers) {
+        List<Route> routes = routeDAO.getAll().stream()
+                .filter(route -> route.getDepartureCityId() == departureCityId)
+                .filter(route -> route.getArrivalCityId() == arrivalCityId)
+                .filter(route -> route.getTimeDeparture().isAfter(timeDeparture))
+                .collect(Collectors.toList());
+        if (typeCabin == TypeCabin.ECONOMY) {
+            routes = routes.stream()
+                    .filter(route -> route.getBusinessClassSeat() >= numberPassengers)
+                    .collect(Collectors.toList());
+        } else if (typeCabin == TypeCabin.BUSINESS) {
+            routes = routes.stream()
+                    .filter(route -> route.getEconomyClassSeat() >= numberPassengers)
+                    .collect(Collectors.toList());
+        }
+        if (!routes.isEmpty()) {
+            printRoutes(routes);
+        } else {
+            System.out.println("For a given request, nothing found.");
+        }
+        return routes;
+    }
+
+    public boolean getAllDate() {
+//        List<Route> routes = routeDAO.getAll();
+//        if (!routes.isEmpty()) {
+//            System.out.println("*********************************");
+//            System.out.println("Indicate departure date.");
+//            System.out.println("ID\tDATE");
+//            System.out.println("*********************************");
+//            for (Route route : routes) {
+//                if (route.getTimeDeparture().isAfter(LocalDate.now())) {
+//                    System.out.println(route.getId() + ".\t" + route.getTimeDeparture());
+//                }
+//            }
+//            System.out.println("*********************************");
+//        } else {
+//            System.out.println("List routes is empty.");
+//            return false;
+//        }
+        return true;
     }
 
     public boolean getAllRoutes() {
@@ -42,17 +91,20 @@ public class RouteService {
 
     private void printRoutes(List<Route> routes) {
         System.out.println("--------------------------------------------------------------------------------------------");
-        System.out.printf("%-15s%-32s%-30s%-1s\n", " ", "City", "Date", "Class seats");
+        System.out.printf("%-15s%-32s%-30s%-1s\n", " ", "Ticket", "Date", "Class seats");
         System.out.println("--------------------------------------------------------------------------------------------");
         System.out.printf("%-5s%-15s%-15s%-19s%-20s%-10s%-1s", "ID", "Departure", "Arrival",
                 "Departure", "Arrival", "Business", "Economy\n");
         System.out.println("--------------------------------------------------------------------------------------------");
         for (Route route : routes) {
-            System.out.printf("%-5d%-15s%-15s%-19s%-23s%-10d%-1d\n", route.getId(),
-                    cityService.getCity((int) route.getDepartureCityId()),
-                    cityService.getCity((int) route.getArrivalCityId()),
-                    route.getDateDeparture(), route.getDateArrival(),
-                    route.getBusinessClassSeat(), route.getEconomyClassSeat());
+            System.out.printf("%-5d%-15s%-15s%-19s%-23s%-10d%-1d\n",
+                    route.getId(),
+                    cityService.getCityById(route.getDepartureCityId()).getName(),
+                    cityService.getCityById(route.getArrivalCityId()).getName(),
+                    route.getTimeDeparture(),
+                    route.getTimeArrival(),
+                    route.getBusinessClassSeat(),
+                    route.getEconomyClassSeat());
         }
     }
 }

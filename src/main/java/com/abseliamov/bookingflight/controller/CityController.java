@@ -12,11 +12,11 @@ public class CityController {
         this.currentUser = currentUser;
     }
 
-    public void getCity(int cityId) {
-        cityService.getCity(cityId);
+    public void getCity(long cityId) {
+        cityService.getCityById(cityId);
     }
 
     public boolean getAllCity() {
-        return cityService.getAllCity();
+        return cityService.getAllCity() != null;
     }
 }

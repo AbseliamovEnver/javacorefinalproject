@@ -78,6 +78,10 @@ public class InitializationUser {
                         "\nPlease enter the correct data or register");
             }
         } while (!loginUser);
-        System.out.println(firstName + " welcome to our site!!!");
+        System.out.println("*********************************\n" + firstName + " welcome to our site!!!");
+    }
+
+    public void logoutUser() {
+        userController.logoutUser();
     }
 }

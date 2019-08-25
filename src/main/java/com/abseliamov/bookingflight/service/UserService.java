@@ -45,7 +45,9 @@ public class UserService {
     }
 
     public void logoutUser() {
-
+        if (currentUser != null) {
+            currentUser.setUser(null);
+        }
     }
 
     private boolean checkUserInBase(String firstName, String password) {

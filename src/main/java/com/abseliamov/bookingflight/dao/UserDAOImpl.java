@@ -12,7 +12,6 @@ public class UserDAOImpl implements GeneralDaoInterface<User> {
     private File file = IOUtil.getFile("file.users");
     private final String USERS_FILE_HEADER = "Id, firstName, lastName, password, role";
     private final String COMMA_SEPARATOR = ",";
-    private List<User> usersFromFile = new ArrayList<>();
 
     @Override
     public void create(User user) {
@@ -68,6 +67,8 @@ public class UserDAOImpl implements GeneralDaoInterface<User> {
     }
 
     private List<User> readFromFile(File file) {
+        List<User> usersFromFile = new ArrayList<>();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String data;
             while ((data = reader.readLine()) != null) {
@@ -108,6 +109,5 @@ public class UserDAOImpl implements GeneralDaoInterface<User> {
                 IOException e) {
             System.out.println("Error write to file " + file.getName() + " " + e);
         }
-
     }
 }

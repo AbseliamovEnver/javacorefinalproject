@@ -2,6 +2,7 @@ package com.abseliamov.bookingflight.utils;
 
 import com.abseliamov.bookingflight.controller.CityController;
 import com.abseliamov.bookingflight.controller.RouteController;
+import com.abseliamov.bookingflight.controller.TicketController;
 import com.abseliamov.bookingflight.controller.UserController;
 import com.abseliamov.bookingflight.dao.CityDAOImpl;
 import com.abseliamov.bookingflight.dao.RouteDAOImpl;
@@ -28,12 +29,13 @@ public class Injector {
 
     private static RouteDAOImpl routeDAOImpl = new RouteDAOImpl();
     private static RouteService routeService = new RouteService(routeDAOImpl, cityService, currentUser);
-    private static TicketDAOImpl ticketDAO = new TicketDAOImpl();
+    private static TicketDAOImpl ticketDAO = new TicketDAOImpl(currentUser);
     private static TicketService ticketService = new TicketService(routeDAOImpl, routeService, ticketDAO);
+    private static TicketController ticketController = new TicketController(ticketService, currentUser);
     private static RouteController routeController = new RouteController(routeService, currentUser);
 
     private static PassengerMenu passengerMenu = new PassengerMenu(initializationUser, cityController,
-            routeController, currentUser);
+            routeController, ticketController, currentUser);
 
 
     public static CurrentUser getCurrentUser() {
@@ -74,6 +76,18 @@ public class Injector {
 
     public static TicketService getTicketService() {
         return ticketService;
+    }
+
+    public static CityService getCityService() {
+        return cityService;
+    }
+
+    public static TicketDAOImpl getTicketDAO() {
+        return ticketDAO;
+    }
+
+    public static TicketController getTicketController() {
+        return ticketController;
     }
 
     public static RouteController getRouteController() {

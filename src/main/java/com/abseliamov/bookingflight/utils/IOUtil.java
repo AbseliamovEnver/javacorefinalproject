@@ -53,7 +53,7 @@ public class IOUtil {
     }
 
     public static boolean validateNumberSize(int min, int max) {
-        return min >= 0 && min <= max - 1;
+        return min >= 0 && min <= (max - 2);
     }
 
     public static File checkFileExists(String fileName) {

@@ -11,9 +11,9 @@ import java.util.List;
 
 public class RouteDAOImpl implements GeneralDaoInterface<Route> {
     private File file = IOUtil.getFile("file.routes");
-    private final String ROUTES_FILE_HEADER = "Id, cityName";
+    private final String ROUTES_FILE_HEADER = "routeId, cityDepartureId, cityArrivalId, " +
+            "dateDeparture, dateArrival, businessSeats, economySeats";
     private final String COMMA_SEPARATOR = ",";
-    private List<Route> routesFromFile = new ArrayList<>();
 
     @Override
     public void create(Route route) {
@@ -22,34 +22,26 @@ public class RouteDAOImpl implements GeneralDaoInterface<Route> {
 
     @Override
     public Route getById(long id) {
-        return null;
+        return readFromFile(file).stream()
+                .filter(route -> route.getId() == id)
+                .findFirst().get();
     }
 
     @Override
     public List<Route> getAll() {
-//        List<Route> routes = new ArrayList<>();
-//        String data;
-//        try {
-//            while ((data = daoUtil.getReader("file.routes").readLine()) != null) {
-//                String[] routeData = data.split(",");
-//                routes.add(new Route(Long.parseLong(routeData[0].trim()),
-//                        Long.parseLong(routeData[1].trim()),
-//                        Long.parseLong(routeData[2].trim()),
-//                        parseDate(routeData[3].trim()),
-//                        parseDate(routeData[4].trim()),
-//                        Integer.parseInt(routeData[5].trim()),
-//                        Integer.parseInt(routeData[6].trim())));
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error reading file with routes " + e);
-//        }
-//        return routes;
         return readFromFile(file);
     }
 
     @Override
     public void update(Route route) {
-
+        List<Route> routes = readFromFile(file);
+        for (Route routeItem : routes) {
+            if (routeItem.getId() == route.getId()) {
+                routeItem = route;
+                break;
+            }
+        }
+        writeToFile(routes);
     }
 
     @Override
@@ -58,6 +50,8 @@ public class RouteDAOImpl implements GeneralDaoInterface<Route> {
     }
 
     private List<Route> readFromFile(File file) {
+        List<Route> routesFromFile = new ArrayList<>();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String data;
             while ((data = reader.readLine()) != null) {
@@ -79,6 +73,34 @@ public class RouteDAOImpl implements GeneralDaoInterface<Route> {
             System.out.println("Error read from file " + file.getName() + " " + e);
         }
         return routesFromFile;
+    }
+
+    private void writeToFile(List<Route> routes) {
+        try (FileWriter writer = new FileWriter(file)) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(ROUTES_FILE_HEADER);
+            for (Route routeItem : routes) {
+                builder.append("\n");
+                builder.append(routeItem.getId());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getDepartureCityId());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getArrivalCityId());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getTimeDeparture());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getTimeArrival());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getBusinessClassSeat());
+                builder.append(COMMA_SEPARATOR);
+                builder.append(routeItem.getEconomyClassSeat());
+            }
+            writer.write(builder.toString());
+        } catch (
+                IOException e) {
+            System.out.println("Error write to file " + file.getName() + " " + e);
+        }
     }
 
     private LocalDateTime parseDate(String dateString) {

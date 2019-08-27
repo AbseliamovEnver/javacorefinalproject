@@ -1,28 +1,24 @@
 package com.abseliamov.bookingflight.entity;
 
 public class Ticket {
-    private long id;
     private long routeId;
-    private TypeCabin typeCabin;
+    private long id;
     private int place;
+    private String location;
+    private TypeCabin typeCabin;
+    private String baggage;
     private double price;
 
     public Ticket() {
     }
 
-    public int getPlace() {
-        return place;
-    }
-
-    public void setPlace(int place) {
-        this.place = place;
-    }
-
-    public Ticket(long id, long routeId, TypeCabin typeCabin, int place, double price) {
-        this.id = id;
+    public Ticket(long routeId, long id, int place, String location, TypeCabin typeCabin, String baggage, double price) {
         this.routeId = routeId;
-        this.typeCabin = typeCabin;
+        this.id = id;
         this.place = place;
+        this.location = location;
+        this.typeCabin = typeCabin;
+        this.baggage = baggage;
         this.price = price;
     }
 
@@ -42,12 +38,36 @@ public class Ticket {
         this.routeId = routeId;
     }
 
+    public int getPlace() {
+        return place;
+    }
+
+    public void setPlace(int place) {
+        this.place = place;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public TypeCabin getTypeCabin() {
         return typeCabin;
     }
 
     public void setTypeCabin(TypeCabin typeCabin) {
         this.typeCabin = typeCabin;
+    }
+
+    public String getBaggage() {
+        return baggage;
+    }
+
+    public void setBaggage(String baggage) {
+        this.baggage = baggage;
     }
 
     public double getPrice() {

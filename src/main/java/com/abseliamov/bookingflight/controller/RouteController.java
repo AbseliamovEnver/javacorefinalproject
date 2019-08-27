@@ -1,6 +1,7 @@
 package com.abseliamov.bookingflight.controller;
 
 import com.abseliamov.bookingflight.entity.TypeCabin;
+import com.abseliamov.bookingflight.entity.route.Route;
 import com.abseliamov.bookingflight.service.RouteService;
 import com.abseliamov.bookingflight.utils.CurrentUser;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class RouteController {
     private RouteService routeService;
@@ -18,27 +20,21 @@ public class RouteController {
         this.currentUser = currentUser;
     }
 
-    public void getRoutesByRequest(long departureCityId, long arrivalCityId, LocalDate dateDeparture,
+    public List<Route> getRoutesByRequest(long departureCityId, long arrivalCityId, LocalDate dateDeparture,
                                    TypeCabin typeCabin, int numberPassengers) {
+        List<Route> routes = null;
         LocalDateTime timeDeparture;
         if (dateDeparture.equals(LocalDate.now())) {
             timeDeparture = LocalDateTime.now().plusHours(1);
         } else {
             timeDeparture = dateDeparture.atStartOfDay();
         }
-        routeService.getRouteByRequest(departureCityId, arrivalCityId,
+        routes = routeService.getRouteByRequest(departureCityId, arrivalCityId,
                 timeDeparture, typeCabin, numberPassengers);
+        return routes;
     }
 
-    public boolean getAllRoutes() {
-        return routeService.getAllRoutes();
-    }
-
-    public void getAllCity() {
-        routeService.getAllRoutes();
-    }
-
-    public boolean getAllDate() {
-        return routeService.getAllDate();
+    public void reduceSeat(long routeId, long ticketId){
+        routeService.reduceSeat(routeId, ticketId);
     }
 }

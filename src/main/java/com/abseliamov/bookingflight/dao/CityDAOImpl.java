@@ -11,7 +11,6 @@ public class CityDAOImpl implements GeneralDaoInterface<City> {
     private File file = IOUtil.getFile("file.cities");
     private final String CITIES_FILE_HEADER = "Id, cityName";
     private final String COMMA_SEPARATOR = ",";
-    private List<City> citiesFromFile = new ArrayList<>();
 
     @Override
     public void create(City city) {
@@ -48,7 +47,7 @@ public class CityDAOImpl implements GeneralDaoInterface<City> {
 
     @Override
     public List<City> getAll() {
-       return readFromFile(file);
+        return readFromFile(file);
     }
 
     @Override
@@ -61,6 +60,8 @@ public class CityDAOImpl implements GeneralDaoInterface<City> {
     }
 
     private List<City> readFromFile(File file) {
+        List<City> citiesFromFile = new ArrayList<>();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String data;
             while ((data = reader.readLine()) != null) {

@@ -9,17 +9,18 @@ import com.abseliamov.flyapplication.utils.CurrentUser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RouteService implements ServiceInterface<Route> {
     private RouteDao routeDao;
-    private TicketDao ticketDao;
+    private TicketService ticketService;
     private CurrentUser currentUser;
 
-    public RouteService(RouteDao routeDao, TicketDao ticketDao, CurrentUser currentUser) {
+    public RouteService(RouteDao routeDao, TicketService ticketService, CurrentUser currentUser) {
         this.routeDao = routeDao;
-        this.ticketDao = ticketDao;
+        this.ticketService = ticketService;
         this.currentUser = currentUser;
     }
 
@@ -48,18 +49,21 @@ public class RouteService implements ServiceInterface<Route> {
         routeDao.delete(route);
     }
 
-    public List<Route> getRouteByRequest(long departureCityId, long arrivalCityId, LocalDate dateDeparture,
+    public List<Route> getRouteByRequest(String departureCityName, String arrivalCityName, LocalDate dateDeparture,
                                          TypeSeat typeSeat, int numberPassengers) {
-        LocalDateTime timeDeparture;
+        LocalDateTime startTimeDeparture;
+        LocalDateTime endTimeDeparture;
         if (dateDeparture.equals(LocalDate.now())) {
-            timeDeparture = LocalDateTime.now().plusHours(1);
+            startTimeDeparture = LocalDateTime.now().plusHours(1);
         } else {
-            timeDeparture = dateDeparture.atStartOfDay();
+            startTimeDeparture = dateDeparture.atStartOfDay();
         }
+        endTimeDeparture = startTimeDeparture.plusDays(1);
         List<Route> routes = routeDao.getAll().stream()
-                .filter(route -> route.getDepartureCity().getId() == departureCityId)
-                .filter(route -> route.getArrivalCity().getId() == arrivalCityId)
-                .filter(route -> route.getDepartureTime().isAfter(timeDeparture))
+                .filter(route -> route.getDepartureCity().equals(departureCityName))
+                .filter(route -> route.getArrivalCity().equals(arrivalCityName))
+                .filter(route -> route.getDepartureTime().isAfter(startTimeDeparture))
+                .filter(route -> route.getDepartureTime().isBefore(endTimeDeparture))
                 .collect(Collectors.toList());
         if (typeSeat == TypeSeat.ECONOMY) {
             routes = routes.stream()
@@ -77,6 +81,7 @@ public class RouteService implements ServiceInterface<Route> {
     }
 
     private void printRoutes(List<Route> routes) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         System.out.println("--------------------------------------------------------------------------------------------");
         System.out.printf("%-15s%-32s%-30s%-1s\n", " ", "CITY", "DATE", "CLASS PLACE");
         System.out.println("--------------------------------------------------------------------------------------------");
@@ -86,26 +91,41 @@ public class RouteService implements ServiceInterface<Route> {
         for (Route route : routes) {
             System.out.printf("%-5d%-15s%-15s%-19s%-23s%-10d%-1d\n",
                     route.getId(),
-                    route.getDepartureCity().getName(),
-                    route.getArrivalCity().getName(),
-                    route.getDepartureTime(),
-                    route.getArrivalTime(),
-//                    route.getBusinessClass(),
-//                    route.getEconomyClass());
+                    route.getDepartureCity(),
+                    route.getArrivalCity(),
+                    route.getDepartureTime().format(formatter),
+                    route.getArrivalTime().format(formatter),
                     route.getBusinessClassSeatCount(),
                     route.getEconomyClassSeatCount());
         }
         System.out.println("--------------------------------------------------------------------------------------------\n");
     }
 
-    public void reduceSeat(long routeId, long ticketId) {
+    public void reduceSeat(long routeId, int ticketNumber) {
         Route route = routeDao.getById(routeId);
-        Ticket ticket = ticketDao.getById(ticketId);
+        long ticketId = ticketService.getTicketIdByPlaceNumber(routeId, ticketNumber);
+        Ticket ticket = ticketService.getById(ticketId);
         if (route != null) {
             if (ticket.getTypeSeat() == TypeSeat.BUSINESS) {
-                Route.newBuilder().setNumberBusinessClassSeat(route.getBusinessClassSeatCount() - 1);
+                route = Route.newBuilder()
+                        .setId(routeId)
+                        .setDepartureCity(route.getDepartureCity())
+                        .setArrivalCity(route.getArrivalCity())
+                        .setDepartureTime(route.getDepartureTime())
+                        .setArrivalTime(route.getArrivalTime())
+                        .setNumberBusinessClassSeat(route.getBusinessClassSeatCount() - 1)
+                        .setNumberEconomyClassSeat(route.getEconomyClassSeatCount())
+                        .build();
             } else if (ticket.getTypeSeat() == TypeSeat.ECONOMY) {
-                Route.newBuilder().setNumberEconomyClassSeat(route.getEconomyClassSeatCount() - 1);
+                route = Route.newBuilder()
+                        .setId(routeId)
+                        .setDepartureCity(route.getDepartureCity())
+                        .setArrivalCity(route.getArrivalCity())
+                        .setDepartureTime(route.getDepartureTime())
+                        .setArrivalTime(route.getArrivalTime())
+                        .setNumberBusinessClassSeat(route.getBusinessClassSeatCount())
+                        .setNumberEconomyClassSeat(route.getEconomyClassSeatCount() - 1)
+                        .build();
             }
         }
         routeDao.update(route);

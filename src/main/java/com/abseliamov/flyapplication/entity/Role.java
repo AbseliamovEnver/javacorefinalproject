@@ -1,6 +1,8 @@
 package com.abseliamov.flyapplication.entity;
 
-public enum Role {
+import java.io.Serializable;
+
+public enum Role implements Serializable {
     ADMIN,
     USER,
     GUEST

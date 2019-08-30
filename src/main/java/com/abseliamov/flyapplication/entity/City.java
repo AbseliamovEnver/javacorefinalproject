@@ -1,6 +1,8 @@
 package com.abseliamov.flyapplication.entity;
 
-public class City extends GenerateID{
+import java.io.Serializable;
+
+public class City extends GenerateID implements Serializable {
     private long id;
     private String name;
 

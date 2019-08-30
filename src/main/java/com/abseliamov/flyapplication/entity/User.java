@@ -1,6 +1,8 @@
 package com.abseliamov.flyapplication.entity;
 
-public class User extends GenerateID{
+import java.io.Serializable;
+
+public class User extends GenerateID implements Serializable {
     private long id;
     private String firstName;
     private String lastName;

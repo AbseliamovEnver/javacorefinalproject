@@ -17,8 +17,8 @@ public class CityController {
         cityService.add(city);
     }
 
-    public City getCityById(long id) {
-        return cityService.getById(id);
+    public String getCityById(long id) {
+        return cityService.getById(id).getName();
     }
 
     public boolean getAllCity() {

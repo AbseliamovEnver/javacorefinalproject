@@ -1,30 +1,29 @@
 package com.abseliamov.flyapplication.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Route extends GenerateID {
+public class Route extends GenerateID implements Serializable {
     private long id;
-    private City departureCity;
-    private City arrivalCity;
+    private String departureCity;
+    private String arrivalCity;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
-//    private TypeSeat businessClass;
-//    private TypeSeat economyClass;
     private int businessClassSeatCount;
     private int economyClassSeatCount;
 
-    private Route(){
+    private Route() {
     }
 
     public long getId() {
         return id;
     }
 
-    public City getDepartureCity() {
+    public String getDepartureCity() {
         return departureCity;
     }
 
-    public City getArrivalCity() {
+    public String getArrivalCity() {
         return arrivalCity;
     }
 
@@ -36,14 +35,6 @@ public class Route extends GenerateID {
         return arrivalTime;
     }
 
-//    public TypeSeat getBusinessClass() {
-//        return businessClass;
-//    }
-//
-//    public TypeSeat getEconomyClass() {
-//        return economyClass;
-//    }
-
     public int getBusinessClassSeatCount() {
         return businessClassSeatCount;
     }
@@ -52,7 +43,7 @@ public class Route extends GenerateID {
         return economyClassSeatCount;
     }
 
-    public static RouteBuilder newBuilder(){
+    public static RouteBuilder newBuilder() {
         return new Route().new RouteBuilder();
     }
 
@@ -65,12 +56,12 @@ public class Route extends GenerateID {
             return this;
         }
 
-        public RouteBuilder setDepartureCity(City departureCity) {
+        public RouteBuilder setDepartureCity(String departureCity) {
             Route.this.departureCity = departureCity;
             return this;
         }
 
-        public RouteBuilder setArrivalCity(City arrivalCity) {
+        public RouteBuilder setArrivalCity(String arrivalCity) {
             Route.this.arrivalCity = arrivalCity;
             return this;
         }
@@ -85,22 +76,12 @@ public class Route extends GenerateID {
             return this;
         }
 
-//        public RouteBuilder setBusinessClass(TypeSeat businessClass) {
-//            Route.this.businessClass = businessClass;
-//            return this;
-//        }
-//
-//        public RouteBuilder setEconomyClass(TypeSeat economyClass) {
-//            Route.this.economyClass = economyClass;
-//            return this;
-//        }
-
-        public RouteBuilder setNumberBusinessClassSeat(int numberBusinessClassSeat){
+        public RouteBuilder setNumberBusinessClassSeat(int numberBusinessClassSeat) {
             Route.this.businessClassSeatCount = numberBusinessClassSeat;
             return this;
         }
 
-        public RouteBuilder setNumberEconomyClassSeat(int numberEconomyClassSeat){
+        public RouteBuilder setNumberEconomyClassSeat(int numberEconomyClassSeat) {
             Route.this.economyClassSeatCount = numberEconomyClassSeat;
             return this;
         }

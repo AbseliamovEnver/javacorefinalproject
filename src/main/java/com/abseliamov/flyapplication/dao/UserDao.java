@@ -127,7 +127,7 @@ public class UserDao extends AbstractDao<User> {
     long getId(List<User> users){
         final long[] id = {1};
         users.forEach(user -> {
-            if (user.getId() > id[0]){
+            if (user.getId() >= id[0]){
                 id[0] = user.getId() + 1;
             }
         });

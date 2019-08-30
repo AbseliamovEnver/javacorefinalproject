@@ -37,12 +37,12 @@ public class RouteController {
         routeService.delete(route);
     }
 
-    public List<Route> getRouteByRequest(long departureCityId, long arrivalCityId, LocalDate dateDeparture,
+    public List<Route> getRouteByRequest(String departureCityName, String arrivalCityName, LocalDate dateDeparture,
                                          TypeSeat typeSeat, int numberPassengers) {
-        return routeService.getRouteByRequest(departureCityId, arrivalCityId, dateDeparture, typeSeat, numberPassengers);
+        return routeService.getRouteByRequest(departureCityName, arrivalCityName, dateDeparture, typeSeat, numberPassengers);
     }
 
-    public void reduceSeat(long routeId, long ticketId) {
-        routeService.reduceSeat(routeId, ticketId);
+    public void reduceSeat(long routeId, int ticketNumber) {
+        routeService.reduceSeat(routeId, ticketNumber);
     }
 }

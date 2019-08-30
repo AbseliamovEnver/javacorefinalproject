@@ -10,15 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDao extends AbstractDao<Ticket> {
-    private RouteDao routeDao;
     private CurrentUser currentUser;
 
     private File file = IOUtil.getFile("file.tickets");
     private final String TICKETS_FILE_HEADER = "ID, ROUTE ID, PLACE NUMBER, LOCATION, TYPE SEAT, BAGGAGE, PRICE";
     private final String COMMA_SEPARATOR = ",";
 
-    public TicketDao(RouteDao routeDao, CurrentUser currentUser) {
-        this.routeDao = routeDao;
+    public TicketDao(CurrentUser currentUser) {
         this.currentUser = currentUser;
     }
 
@@ -32,8 +30,8 @@ public class TicketDao extends AbstractDao<Ticket> {
                     .setId(ticketId)
                     .setRouteId(ticket.getRouteId())
                     .setPlaceNumber(ticket.getPlaceNumber())
-                    .setLocation(ticket.getLocation())
                     .setTypeSeat(ticket.getTypeSeat())
+                    .setLocation(ticket.getLocation())
                     .setBaggage(ticket.getBaggage())
                     .setPrice(ticket.getPrice())
                     .build());
@@ -54,8 +52,8 @@ public class TicketDao extends AbstractDao<Ticket> {
                     .setId(newId)
                     .setRouteId(ticket.getRouteId())
                     .setPlaceNumber(ticket.getPlaceNumber())
-                    .setLocation(ticket.getLocation())
                     .setTypeSeat(ticket.getTypeSeat())
+                    .setLocation(ticket.getLocation())
                     .setBaggage(ticket.getBaggage())
                     .setPrice(ticket.getPrice())
                     .build());
@@ -112,8 +110,8 @@ public class TicketDao extends AbstractDao<Ticket> {
                 .setId(Long.parseLong(ticketData[0]))
                 .setRouteId(Long.parseLong(ticketData[1]))
                 .setPlaceNumber(Integer.parseInt(ticketData[2]))
-                .setLocation(ticketData[3])
-                .setTypeSeat(TypeSeat.getTypeByName(ticketData[4]))
+                .setTypeSeat(TypeSeat.getTypeByName(ticketData[3]))
+                .setLocation(ticketData[4])
                 .setBaggage(ticketData[5])
                 .setPrice(Double.parseDouble(ticketData[6]))
                 .build();
@@ -132,9 +130,9 @@ public class TicketDao extends AbstractDao<Ticket> {
             builder.append(COMMA_SEPARATOR);
             builder.append(ticketItem.getPlaceNumber());
             builder.append(COMMA_SEPARATOR);
-            builder.append(ticketItem.getLocation());
-            builder.append(COMMA_SEPARATOR);
             builder.append(ticketItem.getTypeSeat());
+            builder.append(COMMA_SEPARATOR);
+            builder.append(ticketItem.getLocation());
             builder.append(COMMA_SEPARATOR);
             builder.append(ticketItem.getBaggage());
             builder.append(COMMA_SEPARATOR);
@@ -159,7 +157,7 @@ public class TicketDao extends AbstractDao<Ticket> {
     long getId(List<Ticket> tickets) {
         final long[] id = {1};
         tickets.forEach(ticket -> {
-            if (ticket.getId() > id[0]) {
+            if (ticket.getId() >= id[0]) {
                 id[0] = ticket.getId() + 1;
             }
         });

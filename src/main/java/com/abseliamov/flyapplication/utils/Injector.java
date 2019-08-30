@@ -19,18 +19,19 @@ public class Injector {
     private static CityController cityController = new CityController(cityService, currentUser);
 
     private static RouteDao routeDao = new RouteDao(cityDao);
-    private static TicketDao ticketDao = new TicketDao(routeDao, currentUser);
-    private static RouteService routeService = new RouteService(routeDao, ticketDao, currentUser);
-    private static RouteController routeController = new RouteController(routeService, currentUser);
+    private static TicketDao ticketDao = new TicketDao(currentUser);
     private static TicketService ticketService = new TicketService(ticketDao, routeDao, currentUser);
     private static TicketController ticketController = new TicketController(ticketService, currentUser);
 
-//    private static OrderDao orderDao = new OrderDao(userDAO, ticketDao, currentUser);
-//    private static OrderService orderService = new OrderService(orderDao, ticketDao, currentUser);
-//    private static OrderController orderController = new OrderController(orderService, currentUser);
+    private static RouteService routeService = new RouteService(routeDao, ticketService, currentUser);
+    private static RouteController routeController = new RouteController(routeService, currentUser);
+
+    private static OrderDao orderDao = new OrderDao(userDao, ticketDao, currentUser);
+    private static OrderService orderService = new OrderService(orderDao, ticketDao, routeDao, currentUser);
+    private static OrderController orderController = new OrderController(orderService, currentUser);
 
     private static PassengerMenu passengerMenu = new PassengerMenu(initializationUser, cityController,
-            routeController, ticketController, currentUser);
+            routeController, ticketController, orderController, currentUser);
 
     private Injector() {
     }
@@ -91,17 +92,17 @@ public class Injector {
         return ticketController;
     }
 
-//    public static OrderDao getOrderDao() {
-//        return orderDao;
-//    }
-//
-//    public static OrderService getOrderService() {
-//        return orderService;
-//    }
-//
-//    public static OrderController getOrderController() {
-//        return orderController;
-//    }
+    public static OrderDao getOrderDao() {
+        return orderDao;
+    }
+
+    public static OrderService getOrderService() {
+        return orderService;
+    }
+
+    public static OrderController getOrderController() {
+        return orderController;
+    }
 
     public static PassengerMenu getPassengerMenu() {
         return passengerMenu;

@@ -35,7 +35,7 @@ public class OrderController {
         orderService.delete(order);
     }
 
-    public void orderConfirm(long ticketId) {
-        orderService.orderConfirm(ticketId);
+    public void orderConfirm(long routeId, int placeNumber) {
+        orderService.orderConfirm(routeId, placeNumber);
     }
 }

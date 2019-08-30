@@ -6,6 +6,7 @@ import com.abseliamov.flyapplication.entity.Route;
 import com.abseliamov.flyapplication.entity.Ticket;
 import com.abseliamov.flyapplication.utils.CurrentUser;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,36 +47,50 @@ public class TicketService implements ServiceInterface<Ticket> {
     }
 
     public List<Ticket> getAllTicketsByRouteId(long routeId) {
+        Route route = routeDao.getById(routeId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        System.out.println("\n|----------------------------------------------------------------------------|");
+        System.out.printf("  %-5s%-17s%-18s%-20s%-1s", "ID", "DEPARTURE CITY", "ARRIVAL CITY",
+                "DEPARTURE TIME", "ARRIVAL TIME\n");
+        System.out.println("|----|----------------|----------------|------------------|------------------|");
+        System.out.printf("  %-5d%-17s%-17s%-19s%-1s\n",
+                route.getId(),
+                route.getDepartureCity(),
+                route.getArrivalCity(),
+                route.getDepartureTime().format(formatter),
+                route.getArrivalTime().format(formatter));
+        System.out.println("|----------------------------------------------------------------------------|");
+
         List<Ticket> tickets = ticketDao.getAll().stream()
-                                .filter(ticket -> ticket.getRouteId() == routeId)
-                                .collect(Collectors.toList());
-        tickets.stream().forEach((this::printTicket));
+                .filter(ticket -> ticket.getRouteId() == routeId)
+                .collect(Collectors.toList());
+
+        printTicket(tickets);
         return tickets;
     }
 
-    public void printTicket(Ticket ticket) {
-        Route route = routeDao.getById(ticket.getRouteId());
-        System.out.println("--------------------------------------------------------------------------------------------");
-        System.out.printf("%-15s%-32s%-30s%-1s\n", " ", "CITY", "DATE", "CLASS PLACE");
-        System.out.println("--------------------------------------------------------------------------------------------");
-        System.out.printf("%-5s%-15s%-15s%-19s%-20s%-10s%-1s", "ID", "DEPARTURE", "ARRIVAL",
-                "DEPARTURE", "ARRIVAL", "BUSINESS", "ECONOMY\n");
-        System.out.println("--------------------------------------------------------------------------------------------");
-        System.out.printf("%-5d%-15s%-15s%-19s%-19s%-10d%-10s%-10s%-10s%.2f\n",
-                ticket.getId(),
-                route.getDepartureCity().getName(),
-                route.getArrivalCity().getName(),
-                route.getDepartureTime(),
-                route.getArrivalTime(),
-//                ticket.getRoute().getDepartureCity().getName(),
-//                ticket.getRoute().getArrivalCity().getName(),
-//                ticket.getRoute().getDepartureTime(),
-//                ticket.getRoute().getArrivalTime(),
-                ticket.getPlaceNumber(),
-                ticket.getTypeSeat(),
-                ticket.getLocation(),
-                ticket.getBaggage(),
-                ticket.getPrice());
-        System.out.println("--------------------------------------------------------------------------------------------\n");
+    public void printTicket(List<Ticket> tickets) {
+        System.out.println("\n|----------------------------------------------------|");
+        System.out.printf(" %-9s%-10s%-13s%-13s%-1s", "PLACE", "CLASS", "LOCATION",
+                "BAGGAGE", "PRICE\n");
+        System.out.println("|------|----------|----------|--------------|--------|");
+        for (Ticket ticketItem : tickets) {
+            System.out.printf("  %-7d%-11s%-11s%-15s%.2f\n",
+                    ticketItem.getPlaceNumber(),
+                    ticketItem.getTypeSeat(),
+                    ticketItem.getLocation(),
+                    ticketItem.getBaggage(),
+                    ticketItem.getPrice());
+            System.out.println("|------|----------|----------|--------------|--------|");
+        }
+        System.out.println("|----------------------------------------------------|\n");
+    }
+
+    public long getTicketIdByPlaceNumber(long routeId, int placeNumber) {
+        Ticket ticket = ticketDao.getAll().stream()
+                .filter(ticketRouteId -> ticketRouteId.getRouteId() == routeId)
+                .filter(ticketPlaceName -> ticketPlaceName.getPlaceNumber() == placeNumber)
+                .findFirst().get();
+        return ticket.getId();
     }
 }

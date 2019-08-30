@@ -1,14 +1,16 @@
 package com.abseliamov.flyapplication.entity;
 
-public class Order extends GenerateID{
-    private long id;
-    private User user;
-    private Ticket ticket;
+import java.io.Serializable;
 
-    public Order(long id, User user, Ticket ticket) {
+public class Order extends GenerateID implements Serializable {
+    private long id;
+    private long routeId;
+    private long ticketId;
+
+    public Order(long id, long routeId, long ticketId) {
         this.id = id;
-        this.user = user;
-        this.ticket = ticket;
+        this.routeId = routeId;
+        this.ticketId = ticketId;
     }
 
     public long getId() {
@@ -19,19 +21,19 @@ public class Order extends GenerateID{
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public long getRouteId() {
+        return routeId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setRouteId(long routeId) {
+        this.routeId = routeId;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public long getTicketId() {
+        return ticketId;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setTicketId(long ticketId) {
+        this.ticketId = ticketId;
     }
 }

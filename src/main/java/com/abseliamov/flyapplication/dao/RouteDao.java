@@ -1,10 +1,10 @@
 package com.abseliamov.flyapplication.dao;
 
 import com.abseliamov.flyapplication.entity.Route;
-import com.abseliamov.flyapplication.entity.TypeSeat;
 import com.abseliamov.flyapplication.utils.IOUtil;
 
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,7 @@ public class RouteDao extends AbstractDao<Route> {
     private final String ROUTES_FILE_HEADER = "ID, DEPARTURE CITY, ARRIVAL CITY, " +
             "DEPARTURE DATE, ARRIVAL DATE, BUSINESS CLASS, ECONOMY CLASS";
     private final String COMMA_SEPARATOR = ",";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public RouteDao(CityDao cityDao) {
         this.cityDao = cityDao;
@@ -22,6 +23,7 @@ public class RouteDao extends AbstractDao<Route> {
 
     @Override
     public void create(Route route) {
+
         boolean routeExist = false;
         long routeId = 1;
         List<Route> routes = getAll();
@@ -32,8 +34,6 @@ public class RouteDao extends AbstractDao<Route> {
                     .setArrivalCity(route.getArrivalCity())
                     .setDepartureTime(route.getDepartureTime())
                     .setArrivalTime(route.getArrivalTime())
-//                    .setBusinessClass(route.getBusinessClass())
-//                    .setEconomyClass(route.getEconomyClass())
                     .setNumberBusinessClassSeat(route.getBusinessClassSeatCount())
                     .setNumberEconomyClassSeat(route.getEconomyClassSeatCount())
                     .build());
@@ -56,8 +56,6 @@ public class RouteDao extends AbstractDao<Route> {
                     .setArrivalCity(route.getArrivalCity())
                     .setDepartureTime(route.getDepartureTime())
                     .setArrivalTime(route.getArrivalTime())
-//                    .setBusinessClass(route.getBusinessClass())
-//                    .setEconomyClass(route.getEconomyClass())
                     .setNumberBusinessClassSeat(route.getBusinessClassSeatCount())
                     .setNumberEconomyClassSeat(route.getEconomyClassSeatCount())
                     .build());
@@ -112,12 +110,10 @@ public class RouteDao extends AbstractDao<Route> {
     Route parseDataFromFile(String[] routeData) {
         Route route = Route.newBuilder()
                 .setId(Long.parseLong(routeData[0]))
-                .setDepartureCity(cityDao.getCityByName(routeData[1]))
-                .setArrivalCity(cityDao.getCityByName(routeData[2]))
+                .setDepartureCity(routeData[1].trim())
+                .setArrivalCity(routeData[2].trim())
                 .setDepartureTime(parseDate(routeData[3]))
                 .setArrivalTime(parseDate(routeData[4]))
-//                .setBusinessClass(TypeSeat.getTypeByName(routeData[5]))
-//                .setEconomyClass(TypeSeat.getTypeByName(routeData[6]))
                 .setNumberBusinessClassSeat(Integer.parseInt(routeData[5]))
                 .setNumberEconomyClassSeat(Integer.parseInt(routeData[6]))
                 .build();
@@ -136,14 +132,10 @@ public class RouteDao extends AbstractDao<Route> {
             builder.append(COMMA_SEPARATOR);
             builder.append(routeItem.getArrivalCity());
             builder.append(COMMA_SEPARATOR);
-            builder.append(routeItem.getDepartureTime());
+            builder.append(routeItem.getDepartureTime().format(formatter));
             builder.append(COMMA_SEPARATOR);
-            builder.append(routeItem.getArrivalTime());
+            builder.append(routeItem.getArrivalTime().format(formatter));
             builder.append(COMMA_SEPARATOR);
-//            builder.append(routeItem.getBusinessClass());
-//            builder.append(COMMA_SEPARATOR);
-//            builder.append(routeItem.getEconomyClass());
-//            builder.append(COMMA_SEPARATOR);
             builder.append(routeItem.getBusinessClassSeatCount());
             builder.append(COMMA_SEPARATOR);
             builder.append(routeItem.getEconomyClassSeatCount());
@@ -167,7 +159,7 @@ public class RouteDao extends AbstractDao<Route> {
     long getId(List<Route> routes) {
         final long[] id = {1};
         routes.forEach(route -> {
-            if (route.getId() > id[0]) {
+            if (route.getId() >= id[0]) {
                 id[0] = route.getId() + 1;
             }
         });

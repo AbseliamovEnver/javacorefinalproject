@@ -25,12 +25,12 @@ public class PassengerMenu {
 
     public PassengerMenu(InitializationUser initializationUser, CityController cityController,
                          RouteController routeController, TicketController ticketController,
-                         /*OrderController orderController,*/ CurrentUser currentUser) {
+                         OrderController orderController, CurrentUser currentUser) {
         this.initializationUser = initializationUser;
         this.cityController = cityController;
         this.routeController = routeController;
         this.ticketController = ticketController;
-//        this.orderController = orderController;
+        this.orderController = orderController;
         this.currentUser = currentUser;
     }
 
@@ -99,8 +99,10 @@ public class PassengerMenu {
     }
 
     private long searchTicket() {
-        long cityDepartureId = 0;
-        long cityArrivalId = 0;
+        long cityDepartureId;
+        long cityArrivalId;
+        String departureCityName = null;
+        String arrivalCityName = null;
         int numberPassengers = 0;
         TypeSeat typeSeat = null;
         LocalDate dateDeparture = null;
@@ -117,6 +119,8 @@ public class PassengerMenu {
                         System.out.println("Departure and arrival cities should be different.");
                     }
                 } while (cityDepartureId == cityArrivalId);
+                departureCityName = cityController.getCityById(cityDepartureId);
+                arrivalCityName = cityController.getCityById(cityArrivalId);
 
                 String date = IOUtil.getValidInputData(
                         "Enter departure date in format \'dd.MM.yyyy\': ", InputData.DATE);
@@ -130,7 +134,8 @@ public class PassengerMenu {
                 numberPassengers = Integer.parseInt(IOUtil.getValidInputData(
                         "Enter the number of passengers: ", InputData.INTEGER));
             }
-            routes = routeController.getRouteByRequest(cityDepartureId, cityArrivalId, dateDeparture, typeSeat, numberPassengers);
+            routes = routeController.getRouteByRequest(departureCityName, arrivalCityName,
+                    dateDeparture, typeSeat, numberPassengers);
             if (routes != null) {
                 long ticketId = Integer.parseInt(IOUtil.getValidInputData(
                         "To purchase, select a flight ID or enter \'0\' for a new search: ", InputData.INTEGER));
@@ -152,27 +157,29 @@ public class PassengerMenu {
             if (routeId == 0) {
                 System.out.println("Please search route ID.");
                 long selectId = Long.parseLong(IOUtil.getValidInputData(
-                        "Enter \'1\' to find the route or \'0\' to return: ", InputData.INTEGER));
+                        "Enter \'1\' to find the flight or \'0\' to return: ", InputData.INTEGER));
                 return selectId;
             } else {
                 if (ticketController.getAllTicketsByRouteId(routeId) != null) {
-                    long selectTicketId = Long.parseLong(IOUtil.getValidInputData(
-                            "Select ID ticket or enter \'0\' to return: ", InputData.INTEGER));
-                    if (selectTicketId != 0) {
-                        orderController.orderConfirm(selectTicketId);
+                    int placeNumber = Integer.parseInt(IOUtil.getValidInputData(
+                            "Select the place number or enter \'0\' to return: ", InputData.INTEGER));
+                    if (placeNumber != 0) {
+                        orderController.orderConfirm(routeId, placeNumber);
                         int order = Integer.parseInt(IOUtil.getValidInputData(
                                 "Enter \'1\' to confirm the order or enter \'0\' to cancel: ", InputData.INTEGER));
                         if (order == 1) {
-                            orderController.addOrder(new Order(0, currentUser.getUser(),
-                                    ticketController.getTicketById(selectTicketId)));
-                            routeController.reduceSeat(routeId, selectTicketId);
-                            ticketController.deleteTicket(ticketController.getTicketById(selectTicketId));
+                            orderController.addOrder(new Order(0, routeId,
+                                    ticketController.getTicketIdByPlaceNumber(routeId, placeNumber)));
+                            routeController.reduceSeat(routeId, placeNumber);
+                            ticketController.deleteTicket(routeId, placeNumber);
+                            System.out.println("You bought a ticket to seat number "
+                                    + placeNumber + " for flight number " + routeId + ".\n\tThank you for your purchase.");
                             return reset;
                         } else {
                             return reset;
                         }
                     }
-                    return selectTicketId;
+                    return placeNumber;
                 }
             }
         }

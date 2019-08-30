@@ -1,6 +1,8 @@
 package com.abseliamov.flyapplication.entity;
 
-public enum TypeSeat {
+import java.io.Serializable;
+
+public enum TypeSeat implements Serializable {
     ECONOMY(1),
     BUSINESS(2),
     ECONOMY_AND_BUSINESS(3);
@@ -22,6 +24,10 @@ public enum TypeSeat {
         return null;
     }
 
+    public static TypeSeat getTypeByName(String typeSeat) {
+        return typeSeat.equals(BUSINESS.name()) ? BUSINESS : ECONOMY;
+    }
+
     public static void printEnum(TypeSeat[] typeSeats) {
         System.out.println("*********************************");
         System.out.println("ID\tType seat");
@@ -30,11 +36,5 @@ public enum TypeSeat {
             System.out.println(type.getValue() + ".\t" + type.name());
         }
         System.out.println("*********************************");
-    }
-
-    public static TypeSeat getTypeByName(String typeSeat) {
-        if (typeSeat.equals(TypeSeat.BUSINESS)) return BUSINESS;
-        if (typeSeat.equals(TypeSeat.ECONOMY)) return ECONOMY;
-        return TypeSeat.ECONOMY_AND_BUSINESS;
     }
 }

@@ -1,6 +1,8 @@
 package com.abseliamov.flyapplication.entity;
 
-public class Ticket extends GenerateID {
+import java.io.Serializable;
+
+public class Ticket extends GenerateID implements Serializable {
     private long id;
     private long routeId;
 
@@ -11,6 +13,7 @@ public class Ticket extends GenerateID {
     private TypeSeat typeSeat;
     private String baggage;
     private double price;
+
     private Ticket() {
     }
 
@@ -46,7 +49,7 @@ public class Ticket extends GenerateID {
         return price;
     }
 
-    public static TicketBuilder newBuilder(){
+    public static TicketBuilder newBuilder() {
         return new Ticket().new TicketBuilder();
     }
 
@@ -59,7 +62,7 @@ public class Ticket extends GenerateID {
             return this;
         }
 
-        public TicketBuilder setRouteId(long routeId){
+        public TicketBuilder setRouteId(long routeId) {
             Ticket.this.routeId = routeId;
             return this;
         }

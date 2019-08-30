@@ -119,7 +119,7 @@ public class CityDao extends AbstractDao<City> {
     long getId(List<City> cities) {
         final long[] id = {1};
         cities.forEach(city -> {
-            if (city.getId() > id[0]) {
+            if (city.getId() >= id[0]) {
                 id[0] = city.getId() + 1;
             }
         });

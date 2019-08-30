@@ -1,8 +1,9 @@
 package com.abseliamov.flyapplication.entity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class GenerateID {
+public abstract class GenerateID implements Serializable {
     private long id;
 
     protected GenerateID() {

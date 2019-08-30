@@ -31,15 +31,20 @@ public class TicketController {
         ticketService.update(ticket);
     }
 
-    public void deleteTicket(Ticket ticket) {
+    public void deleteTicket(long routeId, int ticketNumber) {
+        Ticket ticket = ticketService.getById(ticketService.getTicketIdByPlaceNumber(routeId, ticketNumber));
         ticketService.delete(ticket);
     }
 
-    public List<Ticket> getAllTicketsByRouteId(long routeId){
+    public List<Ticket> getAllTicketsByRouteId(long routeId) {
         return ticketService.getAllTicketsByRouteId(routeId);
     }
 
-    public void printTicket(Ticket ticket) {
-        ticketService.printTicket(ticket);
+    public void printTicket(List<Ticket> tickets) {
+        ticketService.printTicket(tickets);
+    }
+
+    public long getTicketIdByPlaceNumber(long routeId, int placeNumber) {
+        return ticketService.getTicketIdByPlaceNumber(routeId, placeNumber);
     }
 }

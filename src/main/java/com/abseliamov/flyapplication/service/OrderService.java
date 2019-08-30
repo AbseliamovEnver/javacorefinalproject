@@ -1,21 +1,26 @@
 package com.abseliamov.flyapplication.service;
 
+import com.abseliamov.flyapplication.dao.RouteDao;
+import com.abseliamov.flyapplication.entity.Route;
 import com.abseliamov.flyapplication.utils.CurrentUser;
 import com.abseliamov.flyapplication.dao.OrderDao;
 import com.abseliamov.flyapplication.dao.TicketDao;
 import com.abseliamov.flyapplication.entity.Order;
 import com.abseliamov.flyapplication.entity.Ticket;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class OrderService implements ServiceInterface<Order> {
     private OrderDao orderDao;
     private TicketDao ticketDao;
+    private RouteDao routeDao;
     private CurrentUser currentUser;
 
-    public OrderService(OrderDao orderDao, TicketDao ticketDao, CurrentUser currentUser) {
+    public OrderService(OrderDao orderDao, TicketDao ticketDao, RouteDao routeDao, CurrentUser currentUser) {
         this.orderDao = orderDao;
         this.ticketDao = ticketDao;
+        this.routeDao = routeDao;
         this.currentUser = currentUser;
     }
 
@@ -44,33 +49,46 @@ public class OrderService implements ServiceInterface<Order> {
         orderDao.delete(order);
     }
 
-    public void orderConfirm(long ticketId) {
+    public void orderConfirm(long routeId, int placeNumber) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         Ticket ticket = ticketDao.getAll().stream()
-                .filter(ticketOrder -> ticketOrder.getId() == ticketId)
+                .filter(route -> route.getRouteId() == routeId)
+                .filter(place -> place.getPlaceNumber() == placeNumber)
                 .findFirst().get();
-        System.out.println("--------------------------------------------------------------------------------------------");
-        System.out.printf(" %-5s%-15s%-15s%-18s%-1s\n", "ID", "DEPARTURE CITY", "ARRIVAL CITY", "DEPARTURE TIME", "ARRIVAL TIME");
-        System.out.printf(" %-5d%-15s%-15s%-18s%-1s\n",
-                ticket.getId(),
-                ticket.getRoute().getDepartureCity().getName(),
-                ticket.getRoute().getArrivalCity().getName(),
-                ticket.getRoute().getDepartureTime(),
-                ticket.getRoute().getArrivalTime());
-        System.out.println("|----------|------------|-------------|---------------|------------|");
-        System.out.printf(" %-15s%-1s\n", "FIRST NAME", "LAST NAME", "ARRIVAL CITY", "DEPARTURE TIME", "ARRIVAL TIME");
-        System.out.println("|----------|------------|-------------|---------------|------------|");
-        System.out.printf(" %-15s%-1s\n",
+        Route route = routeDao.getById(routeId);
+        System.out.println("|*******  PASSENGER INFORMATION  ******|");
+        System.out.println("|-----------------|--------------------|");
+        System.out.printf("  %-20s%-1s\n", "FIRST NAME", "LAST NAME");
+        System.out.println("|-----------------|--------------------|");
+        System.out.printf("  %-19s%-1s\n",
                 currentUser.getUser().getFirstName(),
                 currentUser.getUser().getLastName());
-        System.out.println("|-----|-----|------------|-------------|---------------|------------|");
-        System.out.printf(" %-5s%-15s%-15s%-18s%-1s\n", "PLACE", "LOCATION", "TYPE SEAT", "BAGGAGE", "PRICE");
-        System.out.println("|-----|-----|------------|-------------|---------------|------------|");
-        System.out.printf(" %-5d%-15s%-15s%-18s%.2f\n",
+        System.out.println("|--------------------------------------|");
+
+        System.out.println("\n|*****************************  FLIGHT INFORMATION  *****************************|");
+        System.out.println("|--------|----------------|----------------|------------------|------------------|");
+        System.out.printf("  %-9s%-18s%-17s%-19s%-1s", "FLIGHT", "DEPARTURE CITY", "ARRIVAL CITY",
+                "DEPARTURE TIME", "ARRIVAL TIME\n");
+        System.out.println("|--------|----------------|----------------|------------------|------------------|");
+        System.out.printf("  %-9d%-18s%-16s%-18s%-1s\n",
+                route.getId(),
+                route.getDepartureCity(),
+                route.getArrivalCity(),
+                route.getDepartureTime().format(formatter),
+                route.getArrivalTime().format(formatter));
+        System.out.println("|--------------------------------------------------------------------------------|");
+
+        System.out.println("\n|***************  PLACE INFORMATION  ****************|");
+        System.out.println("|------|----------|----------|--------------|--------|");
+        System.out.printf(" %-9s%-10s%-13s%-13s%-1s", "PLACE", "CLASS", "LOCATION",
+                "BAGGAGE", "PRICE\n");
+        System.out.println("|------|----------|----------|--------------|--------|");
+        System.out.printf("  %-7d%-11s%-11s%-15s%.2f\n",
                 ticket.getPlaceNumber(),
-                ticket.getLocation(),
                 ticket.getTypeSeat(),
+                ticket.getLocation(),
                 ticket.getBaggage(),
                 ticket.getPrice());
-        System.out.println("--------------------------------------------------------------------------------------------\n");
+        System.out.println("|----------------------------------------------------|\n");
     }
 }

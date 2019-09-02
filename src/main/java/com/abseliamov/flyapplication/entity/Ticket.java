@@ -5,9 +5,7 @@ import java.io.Serializable;
 public class Ticket extends GenerateID implements Serializable {
     private long id;
     private long routeId;
-
     private Route route;
-
     private int placeNumber;
     private String location;
     private TypeSeat typeSeat;

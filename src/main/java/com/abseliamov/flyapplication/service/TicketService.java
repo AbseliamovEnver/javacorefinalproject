@@ -86,11 +86,10 @@ public class TicketService implements ServiceInterface<Ticket> {
         System.out.println("|----------------------------------------------------|\n");
     }
 
-    public long getTicketIdByPlaceNumber(long routeId, int placeNumber) {
-        Ticket ticket = ticketDao.getAll().stream()
+    public Ticket getTicketByPlaceNumber(long routeId, int placeNumber) {
+        return ticketDao.getAll().stream()
                 .filter(ticketRouteId -> ticketRouteId.getRouteId() == routeId)
                 .filter(ticketPlaceName -> ticketPlaceName.getPlaceNumber() == placeNumber)
                 .findFirst().get();
-        return ticket.getId();
     }
 }

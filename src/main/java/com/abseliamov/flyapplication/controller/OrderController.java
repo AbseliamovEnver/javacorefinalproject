@@ -1,5 +1,7 @@
 package com.abseliamov.flyapplication.controller;
 
+import com.abseliamov.flyapplication.entity.Route;
+import com.abseliamov.flyapplication.entity.Ticket;
 import com.abseliamov.flyapplication.utils.CurrentUser;
 import com.abseliamov.flyapplication.entity.Order;
 import com.abseliamov.flyapplication.service.OrderService;
@@ -15,7 +17,15 @@ public class OrderController {
         this.currentUser = currentUser;
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Ticket ticket, Route route) {
+        Order order = Order.newOrderBuilder()
+                .setId(0)
+                .setTicket(ticket)
+                .setDepartureCity(route.getDepartureCity())
+                .setArrivalCity(route.getArrivalCity())
+                .setDepartureTime(route.getDepartureTime())
+                .setArrivalTime(route.getArrivalTime())
+                .build();
         orderService.add(order);
     }
 
@@ -37,5 +47,9 @@ public class OrderController {
 
     public void orderConfirm(long routeId, int placeNumber) {
         orderService.orderConfirm(routeId, placeNumber);
+    }
+
+    public boolean getAllOrderingTicket() {
+        return orderService.getAllOrderingTicket();
     }
 }

@@ -4,7 +4,6 @@ import com.abseliamov.flyapplication.controller.CityController;
 import com.abseliamov.flyapplication.controller.OrderController;
 import com.abseliamov.flyapplication.controller.RouteController;
 import com.abseliamov.flyapplication.controller.TicketController;
-import com.abseliamov.flyapplication.entity.Order;
 import com.abseliamov.flyapplication.entity.Route;
 import com.abseliamov.flyapplication.entity.TypeSeat;
 import com.abseliamov.flyapplication.utils.CurrentUser;
@@ -85,6 +84,9 @@ public class PassengerMenu {
                 case 2:
                     ticketId = buyTicket(routeId);
                     searchMenuItem = (ticketId != 0) ? 1 : 0;
+                    break;
+                case 3:
+                    returnTicket();
                     break;
                 case 4:
                     if (currentUser != null) {
@@ -168,12 +170,12 @@ public class PassengerMenu {
                         int order = Integer.parseInt(IOUtil.getValidInputData(
                                 "Enter \'1\' to confirm the order or enter \'0\' to cancel: ", InputData.INTEGER));
                         if (order == 1) {
-                            orderController.addOrder(new Order(0, routeId,
-                                    ticketController.getTicketIdByPlaceNumber(routeId, placeNumber)));
+                            orderController.addOrder(ticketController.getTicketByPlaceNumber(routeId, placeNumber),
+                                    routeController.getRouteById(routeId));
                             routeController.reduceSeat(routeId, placeNumber);
                             ticketController.deleteTicket(routeId, placeNumber);
                             System.out.println("You bought a ticket to seat number "
-                                    + placeNumber + " for flight number " + routeId + ".\n\tThank you for your purchase.");
+                                    + placeNumber + " for flight number " + routeId + ".\n\tThank you for your purchase.\n");
                             return reset;
                         } else {
                             return reset;
@@ -182,6 +184,21 @@ public class PassengerMenu {
                     return placeNumber;
                 }
             }
+        }
+    }
+
+    private long returnTicket() {
+        long reset = 0;
+        while (true) {
+            if (orderController.getAllOrderingTicket()) {
+                long selectId = Long.parseLong(IOUtil.getValidInputData(
+                        "Enter \'1\' to find the flight or \'0\' to return: ", InputData.INTEGER));
+
+            } else {
+                System.out.println("No tickets available for return.");
+                return reset;
+            }
+            return reset;
         }
     }
 }

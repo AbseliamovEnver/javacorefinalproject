@@ -32,7 +32,7 @@ public class TicketController {
     }
 
     public void deleteTicket(long routeId, int ticketNumber) {
-        Ticket ticket = ticketService.getById(ticketService.getTicketIdByPlaceNumber(routeId, ticketNumber));
+        Ticket ticket = ticketService.getTicketByPlaceNumber(routeId, ticketNumber);
         ticketService.delete(ticket);
     }
 
@@ -44,7 +44,7 @@ public class TicketController {
         ticketService.printTicket(tickets);
     }
 
-    public long getTicketIdByPlaceNumber(long routeId, int placeNumber) {
-        return ticketService.getTicketIdByPlaceNumber(routeId, placeNumber);
+    public Ticket getTicketByPlaceNumber(long routeId, int placeNumber) {
+        return ticketService.getTicketByPlaceNumber(routeId, placeNumber);
     }
 }

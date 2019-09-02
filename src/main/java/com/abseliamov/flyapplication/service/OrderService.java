@@ -91,4 +91,18 @@ public class OrderService implements ServiceInterface<Order> {
                 ticket.getPrice());
         System.out.println("|----------------------------------------------------|\n");
     }
+
+    public boolean getAllOrderingTicket() {
+        for (Order order: orderDao.getAllOrders()){
+            System.out.println(order.getId() + " " +
+                    order.getTicket().getId() + " " +
+                    order.getTicket().getRouteId() + " " +
+                    order.getTicket().getPlaceNumber() + " " +
+                    order.getTicket().getTypeSeat() + " " +
+                    order.getTicket().getLocation() + " " +
+                    order.getTicket().getBaggage() + " " +
+                    order.getTicket().getPrice());
+        }
+        return orderDao.getAllOrders() != null;
+    }
 }

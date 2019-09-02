@@ -1,7 +1,6 @@
 package com.abseliamov.flyapplication.service;
 
 import com.abseliamov.flyapplication.dao.RouteDao;
-import com.abseliamov.flyapplication.dao.TicketDao;
 import com.abseliamov.flyapplication.entity.Route;
 import com.abseliamov.flyapplication.entity.Ticket;
 import com.abseliamov.flyapplication.entity.TypeSeat;
@@ -103,8 +102,7 @@ public class RouteService implements ServiceInterface<Route> {
 
     public void reduceSeat(long routeId, int ticketNumber) {
         Route route = routeDao.getById(routeId);
-        long ticketId = ticketService.getTicketIdByPlaceNumber(routeId, ticketNumber);
-        Ticket ticket = ticketService.getById(ticketId);
+        Ticket ticket = ticketService.getTicketByPlaceNumber(routeId, ticketNumber);
         if (route != null) {
             if (ticket.getTypeSeat() == TypeSeat.BUSINESS) {
                 route = Route.newBuilder()

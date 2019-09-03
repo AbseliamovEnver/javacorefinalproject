@@ -47,7 +47,7 @@ public class TicketDao extends AbstractDao<Ticket> {
             }
         }
         if (!ticketExist) {
-            long newId = getId(tickets);
+            long newId = (ticket.getId() == 0) ? getId(tickets) : ticket.getId();
             tickets.add(Ticket.newBuilder()
                     .setId(newId)
                     .setRouteId(ticket.getRouteId())

@@ -128,4 +128,25 @@ public class RouteService implements ServiceInterface<Route> {
         }
         routeDao.update(route);
     }
+
+    public void incrementTicket(long routeId, Ticket ticket) {
+        Route route = routeDao.getById(routeId);
+        int businessSeat = 0;
+        int economySeat = 0;
+        if (ticket.getTypeSeat() == TypeSeat.BUSINESS) {
+            businessSeat = 1;
+        } else if (ticket.getTypeSeat() == TypeSeat.ECONOMY) {
+            economySeat = 1;
+        }
+        Route updateRoute = Route.newBuilder()
+                .setId(routeId)
+                .setDepartureCity(route.getDepartureCity())
+                .setArrivalCity(route.getArrivalCity())
+                .setDepartureTime(route.getDepartureTime())
+                .setArrivalTime(route.getArrivalTime())
+                .setNumberBusinessClassSeat(route.getBusinessClassSeatCount() + businessSeat)
+                .setNumberEconomyClassSeat(route.getEconomyClassSeatCount() + economySeat)
+                .build();
+        routeDao.update(updateRoute);
+    }
 }

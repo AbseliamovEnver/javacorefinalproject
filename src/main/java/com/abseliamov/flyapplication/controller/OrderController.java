@@ -20,6 +20,7 @@ public class OrderController {
     public void addOrder(Ticket ticket, Route route) {
         Order order = Order.newOrderBuilder()
                 .setId(0)
+                .setRouteId(route.getId())
                 .setTicket(ticket)
                 .setDepartureCity(route.getDepartureCity())
                 .setArrivalCity(route.getArrivalCity())
@@ -41,8 +42,8 @@ public class OrderController {
         orderService.update(order);
     }
 
-    public void deleteOrder(Order order) {
-        orderService.delete(order);
+    public void deleteOrder(long orderId) {
+        orderService.delete(orderService.getById(orderId));
     }
 
     public void orderConfirm(long routeId, int placeNumber) {
@@ -51,5 +52,13 @@ public class OrderController {
 
     public boolean getAllOrderingTicket() {
         return orderService.getAllOrderingTicket();
+    }
+
+    public long getRouteIdByOrderId(long orderId) {
+        return orderService.getRouteIDByOrderId(orderId);
+    }
+
+    public Ticket getTicketByOrderId(long orderId) {
+        return orderService.getTicketByOrderId(orderId);
     }
 }

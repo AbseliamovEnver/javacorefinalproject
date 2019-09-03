@@ -1,5 +1,6 @@
 package com.abseliamov.flyapplication.controller;
 
+import com.abseliamov.flyapplication.entity.Ticket;
 import com.abseliamov.flyapplication.utils.CurrentUser;
 import com.abseliamov.flyapplication.entity.Route;
 import com.abseliamov.flyapplication.entity.TypeSeat;
@@ -44,5 +45,9 @@ public class RouteController {
 
     public void reduceSeat(long routeId, int ticketNumber) {
         routeService.reduceSeat(routeId, ticketNumber);
+    }
+
+    public void incrementTicket(long routeId, Ticket ticket) {
+        routeService.incrementTicket(routeId, ticket);
     }
 }

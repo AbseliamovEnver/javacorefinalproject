@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 public class Order extends GenerateID implements Serializable {
     private long id;
+    private long routeId;
     private Ticket ticket;
     private String departureCity;
     private String arrivalCity;
@@ -16,6 +17,10 @@ public class Order extends GenerateID implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public long getRouteId() {
+        return routeId;
     }
 
     public Ticket getTicket() {
@@ -51,6 +56,11 @@ public class Order extends GenerateID implements Serializable {
 
         public OrderBuilder setId(long id) {
             orderInstance.id = id;
+            return this;
+        }
+
+        public OrderBuilder setRouteId(long routeId){
+            orderInstance.routeId = routeId;
             return this;
         }
 

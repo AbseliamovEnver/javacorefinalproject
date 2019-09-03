@@ -32,6 +32,7 @@ public class OrderDao extends AbstractDao<Order> {
         long orderId = orders != null ? getId(orders) : 1;
         Order newOrder = Order.newOrderBuilder()
                 .setId(orderId)
+                .setRouteId(order.getRouteId())
                 .setTicket(order.getTicket())
                 .setDepartureCity(order.getDepartureCity())
                 .setArrivalCity(order.getArrivalCity())
@@ -44,7 +45,7 @@ public class OrderDao extends AbstractDao<Order> {
 
     @Override
     public Order getById(long id) {
-        return getAll().stream()
+        return getAllOrders().stream()
                 .filter(order -> order.getId() == id)
                 .findFirst()
                 .orElse(null);
@@ -70,7 +71,7 @@ public class OrderDao extends AbstractDao<Order> {
 
     @Override
     public void delete(Order order) {
-        List<Order> orders = getAll();
+        List<Order> orders = getAllOrders();
         List<Order> deleteList = new ArrayList<>();
         if (!orders.isEmpty()) {
             for (Order orderItem : orders) {
@@ -152,9 +153,7 @@ public class OrderDao extends AbstractDao<Order> {
 
     public void writeOrder(File file, List<Order> orders) {
         try (ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(file, true))) {
-            for (Order order : orders) {
-                writer.writeObject(order + "\n");
-            }
+            writer.writeObject(orders);
         } catch (FileNotFoundException e) {
             System.out.println("Error write to order file " + e);
         } catch (IOException e) {
@@ -164,17 +163,19 @@ public class OrderDao extends AbstractDao<Order> {
 
     public List<Order> readOrderFile(File file) {
         List<Order> orders = new ArrayList<>();
-        try (ObjectInputStream reader = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-            Order order = (Order) reader.readObject();
-            while (order != null) {
-                orders.add(order);
+        if (file.length() == 0) {
+            return orders;
+        } else {
+            try (ObjectInputStream reader = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+                orders = (List<Order>) reader.readObject();
+//            Order order = (Order) reader.readObject();
+            } catch (FileNotFoundException e) {
+                System.out.println("Error read to order file " + e);
+            } catch (IOException e) {
+                System.out.println("Error IO read order file " + e);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error read to order file " + e);
-        } catch (IOException e) {
-            System.out.println("Error IO read order file " + e);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return orders;
     }

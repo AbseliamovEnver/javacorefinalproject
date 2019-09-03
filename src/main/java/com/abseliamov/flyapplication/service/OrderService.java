@@ -16,6 +16,7 @@ public class OrderService implements ServiceInterface<Order> {
     private TicketDao ticketDao;
     private RouteDao routeDao;
     private CurrentUser currentUser;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public OrderService(OrderDao orderDao, TicketDao ticketDao, RouteDao routeDao, CurrentUser currentUser) {
         this.orderDao = orderDao;
@@ -50,7 +51,6 @@ public class OrderService implements ServiceInterface<Order> {
     }
 
     public void orderConfirm(long routeId, int placeNumber) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         Ticket ticket = ticketDao.getAll().stream()
                 .filter(route -> route.getRouteId() == routeId)
                 .filter(place -> place.getPlaceNumber() == placeNumber)
@@ -93,16 +93,39 @@ public class OrderService implements ServiceInterface<Order> {
     }
 
     public boolean getAllOrderingTicket() {
-        for (Order order: orderDao.getAllOrders()){
-            System.out.println(order.getId() + " " +
-                    order.getTicket().getId() + " " +
-                    order.getTicket().getRouteId() + " " +
-                    order.getTicket().getPlaceNumber() + " " +
-                    order.getTicket().getTypeSeat() + " " +
-                    order.getTicket().getLocation() + " " +
-                    order.getTicket().getBaggage() + " " +
+        List<Order> orders = orderDao.getAllOrders();
+        for (Order order : orders) {
+            System.out.println("\n|*****************************  FLIGHT INFORMATION  *****************************|" +
+                    "|***************  PLACE INFORMATION  ****************|");
+            System.out.println("|--------|----------------|----------------|------------------|------------------|" +
+                    "|------|----------|----------|--------------|--------|");
+            System.out.printf("  %-9s%-18s%-17s%-19s%-18s%-9s%-10s%-13s%-13s%-1s", "ORDER ", "DEPARTURE CITY",
+                    "ARRIVAL CITY", "DEPARTURE TIME", "ARRIVAL TIME", "PLACE", "CLASS", "LOCATION", "BAGGAGE", "PRICE\n");
+            System.out.println("|--------|----------------|----------------|------------------|------------------|" +
+                    "|------|----------|----------|--------------|--------|");
+            System.out.printf("  %-9d%-18s%-16s%-19s%-19s %-7d%-11s%-11s%-15s%.2f\n",
+                    order.getId(),
+                    order.getDepartureCity(),
+                    order.getArrivalCity(),
+                    order.getDepartureTime().format(formatter),
+                    order.getArrivalTime().format(formatter),
+                    order.getTicket().getPlaceNumber(),
+                    order.getTicket().getTypeSeat(),
+                    order.getTicket().getLocation(),
+                    order.getTicket().getBaggage(),
                     order.getTicket().getPrice());
+            System.out.println("|--------------------------------------------------------------------------------|" +
+                    "|----------------------------------------------------|\n");
         }
-        return orderDao.getAllOrders() != null;
+        return orderDao.getAllOrders().size() != 0;
+    }
+
+    public long getRouteIDByOrderId(long orderId) {
+        Order order = orderDao.getById(orderId);
+        return order.getRouteId();
+    }
+
+    public Ticket getTicketByOrderId(long orderId) {
+        return orderDao.getById(orderId).getTicket();
     }
 }

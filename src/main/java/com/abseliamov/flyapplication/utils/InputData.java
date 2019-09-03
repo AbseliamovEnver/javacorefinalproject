@@ -2,11 +2,8 @@ package com.abseliamov.flyapplication.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Predicate;
 
 public enum InputData {
@@ -14,39 +11,21 @@ public enum InputData {
     INTEGER(input -> StringUtils.isNumeric(input), "Please enter a number"),
     DATE(input -> {
         int numberDays = 31;
-        boolean dateFlag = false;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        Calendar currentDate = Calendar.getInstance();
-        Calendar dayBefore = Calendar.getInstance();
-        Date date = null;
+        boolean correctDate = false;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         try {
-            date = dateFormat.parse(input);
-        } catch (ParseException e) {
-            e.printStackTrace();
+            LocalDate userDate = LocalDate.parse(input, formatter);
+            LocalDate beforeDate = LocalDate.now().plusDays(numberDays);
+            if (userDate.compareTo(LocalDate.now()) >= 0 && beforeDate.compareTo(userDate) >= 0) {
+                correctDate = true;
+            } else {
+                System.out.println("Search is possible from: " + LocalDate.now().format(formatter)
+                        + " to: " + beforeDate.format(formatter));
+            }
+        } catch (Exception e) {
+            System.out.println("Enter correct date format dd.MM.yyyy: ");
         }
-        currentDate.set(Calendar.HOUR_OF_DAY, 0);
-        dayBefore.add(Calendar.DATE, numberDays);
-
-        ZonedDateTime start = ZonedDateTime.now();
-        start = start.toLocalDate().atStartOfDay().atZone(start.getZone()).withEarlierOffsetAtOverlap();
-
-
-        System.out.println(currentDate.getTime());
-        System.out.println(date);
-        System.out.println(date.after(currentDate.getTime())); //false
-        System.out.println(date.before(currentDate.getTime())); //true
-        System.out.println(date.equals(currentDate.getTime())); // false
-        System.out.println(date.after(currentDate.getTime())); // false
-        System.out.println(date.compareTo(currentDate.getTime())); // -1
-
-        if (date.after(currentDate.getTime()) && date.before(dayBefore.getTime())
-                /*date.equals(currentDate.getTime())*/) {
-            dateFlag = true;
-        } else {
-            System.out.println("Search is possible from: " + dateFormat.format(currentDate.getTime()) +
-                    " to: " + dateFormat.format(dayBefore.getTime()));
-        }
-        return dateFlag;
+        return correctDate;
     }, "Please enter date in format dd.MM.yyyy");
 
     private Predicate<String> value;

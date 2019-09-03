@@ -86,7 +86,7 @@ public class PassengerMenu {
                     searchMenuItem = (ticketId != 0) ? 1 : 0;
                     break;
                 case 3:
-                    returnTicket();
+                    searchMenuItem = (returnTicket() != 0) ? 1 : 0;
                     break;
                 case 4:
                     if (currentUser != null) {
@@ -138,7 +138,7 @@ public class PassengerMenu {
             }
             routes = routeController.getRouteByRequest(departureCityName, arrivalCityName,
                     dateDeparture, typeSeat, numberPassengers);
-            if (routes != null) {
+            if (routes.size() != 0) {
                 long ticketId = Integer.parseInt(IOUtil.getValidInputData(
                         "To purchase, select a flight ID or enter \'0\' for a new search: ", InputData.INTEGER));
                 if (ticketId != 0) {
@@ -191,9 +191,12 @@ public class PassengerMenu {
         long reset = 0;
         while (true) {
             if (orderController.getAllOrderingTicket()) {
-                long selectId = Long.parseLong(IOUtil.getValidInputData(
-                        "Enter \'1\' to find the flight or \'0\' to return: ", InputData.INTEGER));
-
+                long orderId = Long.parseLong(IOUtil.getValidInputData(
+                        "Select the order number you would like to return or \'0\' to return: ", InputData.INTEGER));
+                ticketController.addTicket(orderController.getTicketByOrderId(orderId));
+                routeController.incrementTicket(orderController.getRouteIdByOrderId(orderId),
+                        orderController.getTicketByOrderId(orderId));
+                orderController.deleteOrder(orderId);
             } else {
                 System.out.println("No tickets available for return.");
                 return reset;

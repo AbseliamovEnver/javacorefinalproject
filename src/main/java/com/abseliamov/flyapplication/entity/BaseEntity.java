@@ -3,10 +3,10 @@ package com.abseliamov.flyapplication.entity;
 import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class GenerateID implements Serializable {
+public abstract class BaseEntity implements Serializable {
     private long id;
 
-    protected GenerateID() {
+    protected BaseEntity() {
         id = generateId();
     }
 

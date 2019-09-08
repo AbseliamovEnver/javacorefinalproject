@@ -2,7 +2,7 @@ package com.abseliamov.flyapplication.entity;
 
 import java.io.Serializable;
 
-public class City extends GenerateID implements Serializable {
+public class City extends BaseEntity implements Serializable {
     private long id;
     private String name;
 

@@ -3,7 +3,7 @@ package com.abseliamov.flyapplication.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Route extends GenerateID implements Serializable {
+public class Route extends BaseEntity implements Serializable {
     private long id;
     private String departureCity;
     private String arrivalCity;

@@ -2,7 +2,7 @@ package com.abseliamov.flyapplication.entity;
 
 import java.io.Serializable;
 
-public class Ticket extends GenerateID implements Serializable {
+public class Ticket extends BaseEntity implements Serializable {
     private long id;
     private long routeId;
     private Route route;

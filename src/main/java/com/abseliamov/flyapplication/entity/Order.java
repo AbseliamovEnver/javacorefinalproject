@@ -3,7 +3,7 @@ package com.abseliamov.flyapplication.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Order extends GenerateID implements Serializable {
+public class Order extends BaseEntity implements Serializable {
     private long id;
     private long routeId;
     private Ticket ticket;
